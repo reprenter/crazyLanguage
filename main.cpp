@@ -2,6 +2,9 @@
 #include "lexemeanalyzer.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    Lexeme lexeme;
+    while (std::cin) {
+        
+    }
     return 0;
 }

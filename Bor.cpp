@@ -10,3 +10,15 @@ void BOR::Add(std::string a) {
     }
     tree->terminal = true;
 }
+
+bool BOR::Find(std::string a) {
+    BorTree* v = head;
+
+    for (auto ch : a) {
+        if (!v->childrens[ch]) {
+            return false;
+        }
+        v = v->childrens[ch];
+    }
+    return true;
+}

@@ -7,6 +7,7 @@ void Lexeme::AnalyzeLexeme(const std::string& lexeme) {
         type_ = Type::INTEGER;
 
     } catch ( ... ) {
-
+        value_ = lexeme;
+        type_ = Type::STRING;
     }
 }

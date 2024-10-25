@@ -17,6 +17,7 @@ public:
         std::map<char, BorTree*> childrens;
     };
     void Add(std::string a);
+    bool Find(std::string a);
 private:
     BorTree* head;
 };
