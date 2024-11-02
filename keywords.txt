@@ -1,3 +1,10 @@
-std
-cin
-cout
+bool
+char
+return
+or
+string
+for
+auto
+if
+true
+false
