@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "BOR.h"
+#include "Bor.h"
 
 enum Type {
     KEYWORD, // +
@@ -281,7 +281,7 @@ std::vector<Lexeme> AnalyzeLexeme() {
         if (Bor.Find(ans[ans.size() - 1].value_) and ans[ans.size() - 1].type_ == Type::IDENTIFIER)
             ans[ans.size() - 1].type_ = Type::KEYWORD;
 
-        //отдельно обработать: ,:;(){}[]
+        //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: ,:;(){}[]
     }
     return ans;
 }
