@@ -1,13 +1,4 @@
 #pragma once
-//
-// Created by qwert on 24.10.2024.
-//
-
-#ifndef BOR_H
-#define BOR_H
-
-#endif //BOR_H
-
 #include <string>
 #include <map>
 #include <fstream>
@@ -27,7 +18,7 @@ public:
     void Add(std::string a) {
         auto tree = head;
         for (auto i : a) {
-            if(tree->childrens[i] == nullptr)tree->childrens[i] = new BorTree;
+            if (tree->childrens[i] == nullptr)tree->childrens[i] = new BorTree;
             tree = tree->childrens[i];
         }
         tree->terminal = true;
