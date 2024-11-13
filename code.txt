@@ -1,9 +1,3 @@
-bool isLetter(char c){
-      return (c >= 'a' && c <= 'z') or (c >= 'A' && c <= 'Z') or c == '_';
-}
-bool isOp(std::string word){
-      for(auto i : {"=", "==", "<", "<=", ">", ">=", "!", "&", "&&", "|", "||", "/", "/=", "*", "*=", "-", "-=", "+", "+="}){
-            if(word == i) return true;
-      }
-      return false;
+int main() {
+      int func();
 }

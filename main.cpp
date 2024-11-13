@@ -10,7 +10,7 @@ int main() {
     std::string filename;
     std::cin >> filename;
 
-    // Чтение файла
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     std::ifstream file(filename);
 
     if (!file.is_open()) {
@@ -19,13 +19,13 @@ int main() {
     }
 
     std::stringstream buffer;
-    buffer << file.rdbuf(); // Чтение содержимого файла в строку
+    buffer << file.rdbuf(); // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     std::string sourceCode = buffer.str();
 
-    Parser parser; // Создание парсера
+    Parser parser; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
     try {
-        parser.parse(); // Запуск синтаксического анализа
+        parser.parse(); // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         std::cout << "Process completed successfully" << '\n';
     }
     catch (const std::exception& e) {
