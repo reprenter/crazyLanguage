@@ -1,15 +1,15 @@
 #pragma once
 #include <string>
+#include <vector>
 #include "Bor.h"
 
 enum Type {
     KEYWORD, // +
-    TYPE,
     IDENTIFIER, // +
     INTEGER, //+
     STRING, // +
-    FLOAT, //+
     CHARACTER, // +
+    TYPE,
     BOOLEAN, // +
     OPERATOR, // +
     NONE,
@@ -37,7 +37,10 @@ struct Lexeme
     int i = 0;
 };
 
-#include <vector>
+bool isType(Lexeme lex) {
+    if (lex.value_ == "int" or lex.value_ == "string" or lex.value_ == "bool" or lex.value_ == "char" or lex.value_ == "auto") return true;
+    return false;
+}
 
 bool isLetter(char c) {
     return (c >= 'a' && c <= 'z') or (c >= 'A' && c <= 'Z') or c == '_';
@@ -111,7 +114,7 @@ std::vector<Lexeme> AnalyzeLexeme() {
             }
         }
         if (lexeme[i] >= '0' and lexeme[i] <= '9') {
-            if (oldLex == Type::INTEGER or oldLex == Type::FLOAT or oldLex == Type::KEYWORD or oldLex == Type::IDENTIFIER) {
+            if (oldLex == Type::INTEGER or oldLex == Type::KEYWORD or oldLex == Type::IDENTIFIER) {
                 continue;
             }
             else {
@@ -126,16 +129,16 @@ std::vector<Lexeme> AnalyzeLexeme() {
             }
         }
         if (lexeme[i] == '.') {
-            if (oldLex == Type::INTEGER or oldLex == Type::FLOAT) {
-                oldLex = Type::FLOAT;
-                ans[ans.size() - 1].type_ = Type::FLOAT;
+            if (oldLex == Type::INTEGER) {
+                oldLex = Type::INTEGER;
+                ans[ans.size() - 1].type_ = Type::INTEGER;
             }
             else {
-                oldLex = Type::FLOAT;
+                oldLex = Type::INTEGER;
                 lex.column_number_ = j;
                 lex.i = i;
                 lex.line_number_ = pos;
-                lex.type_ = Type::FLOAT;
+                lex.type_ = Type::INTEGER;
                 lex.Bor = Bor;
                 if (ans.size() != 0)if (ans[ans.size() - 1].value_ == NASTRING) ans[ans.size() - 1].value_ = Slise(lexeme, ans[ans.size() - 1].i, i);
                 ans.push_back(lex);
@@ -178,10 +181,11 @@ std::vector<Lexeme> AnalyzeLexeme() {
             lex.line_number_ = pos;
             lex.type_ = Type::NONE;
             lex.Bor = Bor;
-            if (ans.size() != 0)if(ans[ans.size() - 1].value_ == NASTRING) ans[ans.size() - 1].value_ = Slise(lexeme, ans[ans.size() - 1].i, i);
+            if (ans.size() != 0)if (ans[ans.size() - 1].value_ == NASTRING) ans[ans.size() - 1].value_ = Slise(lexeme, ans[ans.size() - 1].i, i);
         }
         if (lexeme[i] == '\n') {
             j = 0;
+            pos++;
         }
         switch (lexeme[i]) {
         case ',':
@@ -281,17 +285,9 @@ std::vector<Lexeme> AnalyzeLexeme() {
         }
         if (Bor.Find(ans[ans.size() - 1].value_) and ans[ans.size() - 1].type_ == Type::IDENTIFIER)
             ans[ans.size() - 1].type_ = Type::KEYWORD;
-
-        //�������� ����������: ,:;(){}[]
+        else if (ans[ans.size() - 1].value_ == "true" or ans[ans.size() - 1].value_ == "false" and ans[ans.size() - 1].type_ == Type::IDENTIFIER) ans[ans.size() - 1].type_ == Type::BOOLEAN;
+        else if (isType(ans[ans.size() - 1]) and ans[ans.size() - 1].type_ == Type::IDENTIFIER) ans[ans.size() - 1].type_ = Type::TYPE;
+        
     }
     return ans;
 }
-/*COMMA, //,
-    LEFTBRASKET, //(
-    RIGHTBRASKET, //)
-    LEFTFIGUREBRASKET, // {
-    RIGHTFIGUREBRASKET, // }
-    LEFTSQUAREBRASKET, //[
-    RIGHTSQUAREBRASKET, //]
-    COLON, //:
-    DOTXCOMMA //;*/
