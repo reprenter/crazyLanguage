@@ -4,6 +4,7 @@
 
 enum Type {
     KEYWORD, // +
+    TYPE,
     IDENTIFIER, // +
     INTEGER, //+
     STRING, // +

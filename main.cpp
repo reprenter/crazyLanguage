@@ -1,39 +1,35 @@
 #include <iostream>
 #include <vector>
+#include <sstream>
 
 #include "lexemeanalyzer.h"
-
-std::string coutType(Type other) {
-    switch (other)
-    {
-    case Type::BOOLEAN:
-        return "Bool";
-        break;
-    case Type::CHARACTER:
-        return "Char";
-    case Type::FLOAT:
-        return "Float";
-    case Type::IDENTIFIER:
-        return "ID";
-    case Type::INTEGER:
-        return "INT";
-    case Type::KEYWORD:
-        return "KEYWORD";
-    case Type::NONE:
-        return "NONE";
-    case Type::OPERATOR:
-        return "Operator";
-    case Type::STRING:
-        return "String";
-    }
-    return "";
-}
+#include "parser.h"
 
 int main() {
-    std::vector<Lexeme> lexemes = AnalyzeLexeme();
-    for (int i = 0; i < lexemes.size(); i++) {
-        std::cout << lexemes[i].value_ << ' ' << coutType(lexemes[i].type_) << std::endl;
+    std::cout << "Enter source file name: ";
+    std::string filename;
+    std::cin >> filename;
+    
+    // Чтение файла
+    std::ifstream file(filename);
+    
+    if (!file.is_open()) {
+       std::cerr << "Could not open the file!" << '\n';
+       return 1;
+   }
+    
+   std::stringstream buffer;
+   buffer << file.rdbuf(); // Чтение содержимого файла в строку
+   std::string sourceCode = buffer.str();
 
-    }
-    return 0;
+   Parser parser; // Создание парсера
+
+   try {
+       parser.parse(); // Запуск синтаксического анализа
+       std::cout << "Process completed successfully" << '\n';
+   } catch (const std::exception& e) {
+       std::cerr << "ERROR: " << e.what() << '\n';
+   }
+
+   return 0;
 }
