@@ -19,11 +19,11 @@ int main() {
     }
 
     std::stringstream buffer;
-    buffer << file.rdbuf(); // ������ ����������� ����� � ������
+    buffer << file.rdbuf();
     std::string sourceCode = buffer.str();
 
-    Parser parser; // �������� �������
-
+    Parser parser;
+    
     try {
         parser.parse(); // ������ ��������������� �������
         std::cout << "Process completed successfully" << '\n';
