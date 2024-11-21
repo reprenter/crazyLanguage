@@ -1,11 +1,22 @@
+
+
 int main() {
-    int n = 0
-    for (int i = 0; i < n; ++i) {
-        if (i % 2) {
-            i += 3
-            n -= 1
-        }
-        break
+
+
+    if (!file.is_open()) {
+        return 1;
     }
+
+    stringstream buffer;
+    string sourceCode = str();
+
+    Parser parser;
+    
+    try {
+        parse(); 
+    }
+    catch () {
+    }
+
     return 0;
 }

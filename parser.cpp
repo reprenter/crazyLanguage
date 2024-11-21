@@ -30,9 +30,7 @@ void Parser::function() {
         parameters();
         match(Type::RIGHTBRASKET);
         if (lexemes[pos].type_ == Type::RIGHTBRASKET) {
-            match(Type::LEFTFIGUREBRASKET);
             block();
-            match(Type::RIGHTFIGUREBRASKET);
         }
     }
 }
@@ -90,6 +88,7 @@ void Parser::instruction() {
             }
         } 
     }
+    instruction();
 }
 
 
@@ -101,6 +100,7 @@ void Parser::ooperator() {
             expression();
             match(Type::DOTXCOMMA);
         } else {
+            match(Type::DOTXCOMMA);
             declaration();
         }
     } else {
