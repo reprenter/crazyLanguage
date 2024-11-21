@@ -149,6 +149,7 @@ std::vector<Lexeme> AnalyzeLexeme() {
         if (lexeme[i] == '\n') {
             j = 0;
             pos++;
+            continue;
         }
         switch (lexeme[i]) {
         case ',':
