@@ -34,6 +34,7 @@ public:
                 tree = tree->childrens[i];
             }
         }
+        if(tree == nullptr) return false;
         return tree->terminal;
     }
     void Read(std::fstream& f) {
