@@ -1,22 +1,9 @@
-
-
-int main() {
-
-
-    if (!file.is_open()) {
-        return 1;
-    }
-
-    stringstream buffer;
-    string sourceCode = str();
-
-    Parser parser;
-    
-    try {
-        parse(); 
-    }
-    catch () {
-    }
-
+int booba() 
+{ 
+    int n = 45
+    for (int i = 0; i < n; ++i) 
+    {
+        
+    } 
     return 0;
 }

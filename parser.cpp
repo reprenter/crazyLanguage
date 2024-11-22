@@ -1,11 +1,13 @@
 #include "parser.h"
 
 void Parser::match(Type other) {
+    // std::cout << pos << ": " << lexemes[pos].value_ << std::endl;
     if (lexemes[pos].type_ == other) {
-        pos += 1;
+        ++pos;
+        return;
     }
     else {
-        throw std::runtime_error("Unexpected token in line " + std::to_string(lexemes[pos].line_number_ + 1) + ": " + lexemes[pos].value_ + "\n Expected: " + std::to_string(other) + ", but got: " + std::to_string(lexemes[pos].type_));
+        throw std::runtime_error("SYNTAX ERROR\nUnexpected token in line " + std::to_string(lexemes[pos].line_number_ + 1) + ": " + lexemes[pos].value_ + "\n Expected: " + std::to_string(other) + ", but got: " + std::to_string(lexemes[pos].type_));
     }
 }
 
@@ -19,20 +21,18 @@ void Parser::declaration() {
             variable();
             declaration();
         }
+    } else {
+        match(Type::TYPE);
     }
 }
 
 void Parser::function() {
     match(Type::TYPE);
     match(Type::IDENTIFIER);
-    if (lexemes[pos].type_ == Type::LEFTBRASKET) {
-        match(Type::LEFTBRASKET);
-        parameters();
-        match(Type::RIGHTBRASKET);
-        if (lexemes[pos].type_ == Type::RIGHTBRASKET) {
-            block();
-        }
-    }
+    match(Type::LEFTBRASKET);
+    parameters();
+    match(Type::RIGHTBRASKET);
+    block();
 }
 
 void Parser::variable() {
@@ -50,7 +50,7 @@ void Parser::variable() {
         match(Type::DOTXCOMMA);
     }
     else {
-        throw std::runtime_error("Unexpected token in line " + std::to_string(lexemes[pos].line_number_ + 1) + "\nExpected definiton of variable");
+        throw std::runtime_error("SYNTAX ERROR\nUnexpected token in line " + std::to_string(lexemes[pos].line_number_ + 1) + "\nExpected definiton of variable");
     }
 }
 
@@ -73,22 +73,63 @@ void Parser::block() {
 
 
 void Parser::instruction() {
-    try {
-        ooperator();
-    } catch(...) {
-        try {
-            variable();
-        } catch (...) {
-            try {
-                cycle();
-            } catch (...) {
-                try {
-                    ifinstruct();
-                } catch (...) {}
-            }
-        } 
+    if (lexemes[pos].type_ == Type::IDENTIFIER) {
+        if (lexemes[pos].value_ == "if") {
+            ifinstruct();
+            instruction();
+        }
+        else if (lexemes[pos].value_ == "switch") {
+            cases();
+            instruction();
+        }
+        else if (lexemes[pos].value_ == "while") {
+            cycle();
+            instruction();
+        }
+        else if (lexemes[pos].value_ == "for") {
+            cycle();
+            instruction();
+        }
     }
-    instruction();
+    else if (lexemes[pos].type_ == Type::TYPE) {
+        declaration();
+        instruction();
+    }
+    else if (lexemes[pos].type_ == Type::IDENTIFIER) {
+        if (lexemes[pos].value_ == "return") {
+            match(Type::IDENTIFIER);
+            expression();
+            match(Type::DOTXCOMMA);
+            instruction();
+        }
+    }
+    else if (lexemes[pos].type_ == Type::IDENTIFIER) {
+        ooperator();
+        instruction();
+    }
+    else if (lexemes[pos].type_ == Type::RIGHTBRASKET) {
+        return;
+    }
+
+    
+    // try {
+    //     ooperator();
+    // } catch(...) {
+    //     try {
+    //         variable();
+    //     } catch (...) {
+    //         try {
+    //             cycle();
+    //         } catch (...) {
+    //             try {
+    //                 ifinstruct();
+    //             } catch (...) {
+    //                 throw std::runtime_error("SYNTAX ERROR\nUnexpected token in line " + std::to_string(lexemes[pos].line_number_ + 1));
+    //             }
+    //         }
+    //     } 
+    // }
+    // instruction();
 }
 
 
@@ -104,13 +145,13 @@ void Parser::ooperator() {
             declaration();
         }
     } else {
-        if (lexemes[pos].type_ = Type::KEYWORD) {
+        if (lexemes[pos].type_ = Type::IDENTIFIER) {
             if (lexemes[pos].value_ == "return") {
-                match(Type::KEYWORD);
+                match(Type::IDENTIFIER);
                 expression();
                 match(Type::DOTXCOMMA);
             } else if (lexemes[pos].value_ == "break" || lexemes[pos].value_ == "continue") {
-                match(Type::KEYWORD);
+                match(Type::IDENTIFIER);
                 match(Type::DOTXCOMMA);
             }
         }
@@ -118,15 +159,15 @@ void Parser::ooperator() {
 }
 
 void Parser::cycle() {
-    if (lexemes[pos].type_ == Type::KEYWORD) {
+    if (lexemes[pos].type_ == Type::IDENTIFIER) {
         if (lexemes[pos].value_ == "while") {
-            match(Type::KEYWORD);
+            match(Type::IDENTIFIER);
             match(Type::LEFTBRASKET);
             expression();
             match(Type::RIGHTBRASKET);
             block();
         } else if (lexemes[pos].value_ == "for") {
-            match(Type::KEYWORD);
+            match(Type::IDENTIFIER);
             match(Type::LEFTBRASKET);
             initialization();
             match(Type::DOTXCOMMA);
@@ -148,21 +189,21 @@ void Parser::step() {
 }
 
 void Parser::ifinstruct() {
-    if (lexemes[pos].type_ == Type::KEYWORD) {
+    if (lexemes[pos].type_ == Type::IDENTIFIER) {
         if (lexemes[pos].value_ == "if") {
-            match(Type::KEYWORD);
+            match(Type::IDENTIFIER);
             match(Type::LEFTBRASKET);
             expression();
             match(Type::RIGHTBRASKET);
             block();
-            if (lexemes[pos].type_ == Type::KEYWORD) {
+            if (lexemes[pos].type_ == Type::IDENTIFIER) {
                 if (lexemes[pos].value_ == "else") {
-                    match(Type::KEYWORD);
+                    match(Type::IDENTIFIER);
                     block();
                 }
             }
         } else if (lexemes[pos].value_ == "switch") {
-            match(Type::KEYWORD);
+            match(Type::IDENTIFIER);
             match(Type::LEFTBRASKET);
             match(Type::STRING);
             match(Type::RIGHTBRASKET);
@@ -174,9 +215,9 @@ void Parser::ifinstruct() {
 }
 
 void Parser::cases() {
-    if (lexemes[pos].type_ == Type::KEYWORD) {
+    if (lexemes[pos].type_ == Type::IDENTIFIER) {
         if (lexemes[pos].value_ == "case") {
-            match(Type::KEYWORD);
+            match(Type::IDENTIFIER);
             match(Type::STRING);
             match(Type::COLON);
             block();
@@ -242,7 +283,13 @@ void Parser::expr5() {
 
 void Parser::expr6() {
     if (lexemes[pos].type_ == Type::STRING) {
+        if (lexemes[pos].value_ != std::to_string('"')) {
+            throw std::invalid_argument("SYNTAX ERROR\nInvalid expression in line " + std::to_string(lexemes[pos].line_number_ + 1));
+        }
         match(Type::STRING);
+        if (lexemes[pos].value_ != std::to_string('"')) {
+            throw std::invalid_argument("SYNTAX ERROR\nInvalid expression in line " + std::to_string(lexemes[pos].line_number_ + 1));
+        }
     } else if (lexemes[pos].type_ == Type::INTEGER) {
         match(Type::INTEGER);
     } else if (lexemes[pos].type_ == Type::IDENTIFIER) {
@@ -254,6 +301,6 @@ void Parser::expr6() {
         expression();
         match(Type::RIGHTBRASKET);
     } else {
-        throw std::invalid_argument("Invalid expression in line " + std::to_string(lexemes[pos].line_number_ + 1));
+        throw std::invalid_argument("SYNTAX ERROR\nInvalid expression in line " + std::to_string(lexemes[pos].line_number_ + 1));
     }
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "lexemeanalyzer.h"
+#include <iostream>
 
 class Parser {
 public:
