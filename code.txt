@@ -1,9 +1,16 @@
+int func() {
+    int n = 4
+    return n
+}
+
+int m
+
 int booba() 
 { 
     int n = 45
     for (int i = 0; i < n; ++i) 
     {
-        
+        break
     } 
     return 0;
 }

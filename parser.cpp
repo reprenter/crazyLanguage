@@ -19,8 +19,8 @@ void Parser::declaration() {
         }
         else if (lexemes[pos + 2].type_ == Type::OPERATOR && lexemes[pos + 2].value_ == "=") {
             variable();
-            declaration();
-        }
+            declaration(); // global variables
+        } 
     } else {
         match(Type::TYPE);
     }
@@ -73,37 +73,29 @@ void Parser::block() {
 
 
 void Parser::instruction() {
-    if (lexemes[pos].type_ == Type::IDENTIFIER) {
-        if (lexemes[pos].value_ == "if") {
-            ifinstruct();
-            instruction();
-        }
-        else if (lexemes[pos].value_ == "switch") {
-            cases();
-            instruction();
-        }
-        else if (lexemes[pos].value_ == "while") {
-            cycle();
-            instruction();
-        }
-        else if (lexemes[pos].value_ == "for") {
-            cycle();
-            instruction();
-        }
-    }
-    else if (lexemes[pos].type_ == Type::TYPE) {
-        declaration();
+    if (lexemes[pos].value_ == "if") {
+        ifinstruct();
         instruction();
     }
-    else if (lexemes[pos].type_ == Type::IDENTIFIER) {
-        if (lexemes[pos].value_ == "return") {
-            match(Type::IDENTIFIER);
-            expression();
-            match(Type::DOTXCOMMA);
-            instruction();
-        }
+    else if (lexemes[pos].value_ == "switch") {
+        cases();
+        instruction();
     }
-    else if (lexemes[pos].type_ == Type::IDENTIFIER) {
+    else if (lexemes[pos].value_ == "while") {
+        cycle();
+        instruction();
+    }
+    else if (lexemes[pos].value_ == "for") {
+        cycle();
+        instruction();
+    }
+    if (lexemes[pos].value_ == "return") {
+        match(Type::IDENTIFIER);
+        expression();
+        match(Type::DOTXCOMMA);
+        instruction();
+    }
+    if (lexemes[pos].type_ == Type::IDENTIFIER) {
         ooperator();
         instruction();
     }
