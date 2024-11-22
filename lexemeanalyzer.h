@@ -15,7 +15,7 @@ enum Type {
     NONE,
     COMMA, //,
     LEFTBRASKET, //(
-    RIGHTBRASKET, //)
+    RIGHTBRASKET, //)    
     LEFTFIGUREBRASKET, // {
     RIGHTFIGUREBRASKET, // }
     LEFTSQUAREBRASKET, //[

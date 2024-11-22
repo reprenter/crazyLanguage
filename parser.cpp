@@ -162,7 +162,7 @@ void Parser::cycle() {
             match(Type::IDENTIFIER);
             match(Type::LEFTBRASKET);
             initialization();
-            match(Type::DOTXCOMMA);
+            // match(Type::DOTXCOMMA);
             expression();
             match(Type::DOTXCOMMA);
             step();
@@ -177,7 +177,7 @@ void Parser::initialization() {
 }
 
 void Parser::step() {
-    ooperator();
+    expression();
 }
 
 void Parser::ifinstruct() {
@@ -225,7 +225,7 @@ void Parser::expression() {
         expression();
     }
     if (lexemes[pos].type_ == Type::OPERATOR) {
-        if (lexemes[pos].value_ == "<" || lexemes[pos].value_ == ">" || lexemes[pos].value_ == ">=" || lexemes[pos].value_ == "<=" || lexemes[pos].value_ == "==" || lexemes[pos].value_ == "!=" ) {
+        if (lexemes[pos].value_ == "<" || lexemes[pos].value_ == ">" || lexemes[pos].value_ == ">=" || lexemes[pos].value_ == "<=" || lexemes[pos].value_ == "==" || lexemes[pos].value_ == "!=" || lexemes[pos].value_ == "=" ) {
             match(Type::OPERATOR);
             expression();
         }
