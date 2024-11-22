@@ -1,6 +1,6 @@
 int func() {
-    int n = 4
-    return n
+    int n = 4;
+    return n;
 }
 
 int m

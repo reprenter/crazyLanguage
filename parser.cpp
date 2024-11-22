@@ -95,12 +95,9 @@ void Parser::instruction() {
         match(Type::DOTXCOMMA);
         instruction();
     }
-    if (lexemes[pos].type_ == Type::IDENTIFIER) {
+    if (lexemes[pos].type_ == Type::TYPE) {
         ooperator();
         instruction();
-    }
-    else if (lexemes[pos].type_ == Type::RIGHTBRASKET) {
-        return;
     }
 
     
@@ -126,15 +123,14 @@ void Parser::instruction() {
 
 
 void Parser::ooperator() {
-    if (lexemes[pos].type_ == Type::IDENTIFIER) {
-        match(Type::IDENTIFIER);
+    if (lexemes[pos].type_ == Type::TYPE) {
+        match(Type::TYPE);
         if (lexemes[pos].value_ == "=") {
             match(Type::OPERATOR);
             expression();
             match(Type::DOTXCOMMA);
         } else {
             match(Type::DOTXCOMMA);
-            declaration();
         }
     } else {
         if (lexemes[pos].type_ = Type::IDENTIFIER) {
