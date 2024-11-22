@@ -6,7 +6,7 @@ bool isType(Lexeme lex) {
 }
 
 bool isLetter(char c) {
-    return (c >= 'a' && c <= 'z') or (c >= 'A' && c <= 'Z') or c == '_';
+    return isalpha(c) or c == '_';
 }
 bool isOp(char word) {
     std::string Word;
@@ -251,7 +251,6 @@ std::vector<Lexeme> AnalyzeLexeme() {
             ans[ans.size() - 1].type_ = Type::KEYWORD;
         else if (ans[ans.size() - 1].value_ == "true" or ans[ans.size() - 1].value_ == "false" and ans[ans.size() - 1].type_ == Type::IDENTIFIER) ans[ans.size() - 1].type_ == Type::BOOLEAN;
         else if (isType(ans[ans.size() - 1]) and ans[ans.size() - 1].type_ == Type::IDENTIFIER) ans[ans.size() - 1].type_ = Type::TYPE;
-        
     }
     return ans;
 }

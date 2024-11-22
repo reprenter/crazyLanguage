@@ -1,7 +1,6 @@
 #include "parser.h"
 
 void Parser::match(Type other) {
-    // std::cout << pos << ": " << lexemes[pos].value_ << std::endl;
     if (lexemes[pos].type_ == other) {
         ++pos;
         return;
@@ -12,6 +11,9 @@ void Parser::match(Type other) {
 }
 
 void Parser::declaration() {
+    if (pos >= lexemes.size()) {
+        return;
+    }
     if (lexemes[pos].type_ == Type::TYPE) {
         if (lexemes[pos + 1].type_ == Type::IDENTIFIER && lexemes[pos + 2].type_ == Type::LEFTBRASKET) {
             function();
@@ -41,6 +43,7 @@ void Parser::variable() {
     if (lexemes[pos].value_ == "=") {
         match(Type::OPERATOR);
         expression();
+        match(Type::DOTXCOMMA);
     }
     else if (lexemes[pos].value_ == ",") {
         match(Type::COMMA);
@@ -125,7 +128,8 @@ void Parser::instruction() {
 void Parser::ooperator() {
     if (lexemes[pos].type_ == Type::TYPE) {
         match(Type::TYPE);
-        if (lexemes[pos].value_ == "=") {
+        if (lexemes[pos + 1].type_ == Type::OPERATOR) {
+            match(Type::IDENTIFIER);
             match(Type::OPERATOR);
             expression();
             match(Type::DOTXCOMMA);
@@ -219,6 +223,12 @@ void Parser::expression() {
     if (lexemes[pos].type_ == Type::COMMA) {
         match(Type::COMMA);
         expression();
+    }
+    if (lexemes[pos].type_ == Type::OPERATOR) {
+        if (lexemes[pos].value_ == "<" || lexemes[pos].value_ == ">" || lexemes[pos].value_ == ">=" || lexemes[pos].value_ == "<=" || lexemes[pos].value_ == "==" || lexemes[pos].value_ == "!=" ) {
+            match(Type::OPERATOR);
+            expression();
+        }
     }
 }
 
