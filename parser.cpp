@@ -98,30 +98,15 @@ void Parser::instruction() {
         match(Type::DOTXCOMMA);
         instruction();
     }
+    if (lexemes[pos].value_ == "break" || lexemes[pos].value_ == "continue") {
+        match(Type::IDENTIFIER);
+        match(Type::DOTXCOMMA);
+        instruction();
+    }
     if (lexemes[pos].type_ == Type::TYPE) {
         ooperator();
         instruction();
     }
-
-    
-    // try {
-    //     ooperator();
-    // } catch(...) {
-    //     try {
-    //         variable();
-    //     } catch (...) {
-    //         try {
-    //             cycle();
-    //         } catch (...) {
-    //             try {
-    //                 ifinstruct();
-    //             } catch (...) {
-    //                 throw std::runtime_error("SYNTAX ERROR\nUnexpected token in line " + std::to_string(lexemes[pos].line_number_ + 1));
-    //             }
-    //         }
-    //     } 
-    // }
-    // instruction();
 }
 
 
@@ -135,17 +120,6 @@ void Parser::ooperator() {
             match(Type::DOTXCOMMA);
         } else {
             match(Type::DOTXCOMMA);
-        }
-    } else {
-        if (lexemes[pos].type_ = Type::IDENTIFIER) {
-            if (lexemes[pos].value_ == "return") {
-                match(Type::IDENTIFIER);
-                expression();
-                match(Type::DOTXCOMMA);
-            } else if (lexemes[pos].value_ == "break" || lexemes[pos].value_ == "continue") {
-                match(Type::IDENTIFIER);
-                match(Type::DOTXCOMMA);
-            }
         }
     }
 }
@@ -220,11 +194,11 @@ void Parser::cases() {
 
 void Parser::expression() {
     expr0();
-    if (lexemes[pos].type_ == Type::COMMA) {
+    while (lexemes[pos].type_ == Type::COMMA) {
         match(Type::COMMA);
         expression();
     }
-    if (lexemes[pos].type_ == Type::OPERATOR) {
+    while (lexemes[pos].type_ == Type::OPERATOR) {
         if (lexemes[pos].value_ == "<" || lexemes[pos].value_ == ">" || lexemes[pos].value_ == ">=" || lexemes[pos].value_ == "<=" || lexemes[pos].value_ == "==" || lexemes[pos].value_ == "!=" || lexemes[pos].value_ == "=" ) {
             match(Type::OPERATOR);
             expression();
@@ -241,7 +215,7 @@ void Parser::expr0() {
 
 void Parser::expr1() {
     expr2();
-    if (lexemes[pos].type_ == Type::OPERATOR && lexemes[pos].value_ == "||") {
+    while (lexemes[pos].type_ == Type::OPERATOR && lexemes[pos].value_ == "||") {
         match(Type::OPERATOR);
         expr2();
     }
@@ -249,7 +223,7 @@ void Parser::expr1() {
 
 void Parser::expr2() {
     expr3();
-    if (lexemes[pos].type_ == Type::OPERATOR && lexemes[pos].value_ == "&&") {
+    while (lexemes[pos].type_ == Type::OPERATOR && lexemes[pos].value_ == "&&") {
         match(Type::OPERATOR);
         expr3();
     }
@@ -257,7 +231,7 @@ void Parser::expr2() {
 
 void Parser::expr3() {
     expr4();
-    if (lexemes[pos].type_ == Type::OPERATOR && (lexemes[pos].value_ == "+" || lexemes[pos].value_ == "-")) {
+    while (lexemes[pos].type_ == Type::OPERATOR && (lexemes[pos].value_ == "+" || lexemes[pos].value_ == "-")) {
         match(Type::OPERATOR);
         expr4();
     }
@@ -265,7 +239,7 @@ void Parser::expr3() {
 
 void Parser::expr4() {
     expr5();
-    if (lexemes[pos].type_ == Type::OPERATOR && (lexemes[pos].value_ == "*" || lexemes[pos].value_ == "/" || lexemes[pos].value_ == "%")) {
+    while (lexemes[pos].type_ == Type::OPERATOR && (lexemes[pos].value_ == "*" || lexemes[pos].value_ == "/" || lexemes[pos].value_ == "%")) {
         match(Type::OPERATOR);
         expr5();
     }
@@ -273,7 +247,7 @@ void Parser::expr4() {
 
 void Parser::expr5() {
     expr6();
-    if (lexemes[pos].type_ == Type::OPERATOR && lexemes[pos].value_ == "**") {
+    while (lexemes[pos].type_ == Type::OPERATOR && lexemes[pos].value_ == "**") {
         match(Type::OPERATOR);
         expr6();
     }

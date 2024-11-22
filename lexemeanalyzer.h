@@ -23,6 +23,7 @@ enum Type {
     COLON, //:
     DOTXCOMMA //;
 };
+
 const std::string NASTRING = "~~~~~~";
 
 struct Lexeme
