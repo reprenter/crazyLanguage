@@ -1,8 +1,26 @@
 #include "parser.h"
 
+bool itsTimeToStop = false;
+
+void Parser::saveFromSegFault() {
+    Lexeme lex1, lex2;
+    lex1.type_ = Type::NONE;
+    lex1.value_ = "";
+    lex1.line_number_ = 0;
+    lexemes.push_back(lex1);
+    lex2.type_ = Type::NONE;
+    lex2.value_ = "";
+    lex2.line_number_ = 0;
+    lexemes.push_back(lex2);
+}
+
 void Parser::match(Type other) {
     if (lexemes[pos].type_ == other) {
         ++pos;
+        if (pos >= lexemes.size()) {
+            --pos;
+            itsTimeToStop = true;
+        }
         return;
     }
     else {
@@ -23,7 +41,7 @@ void Parser::declaration() {
             variable();
             declaration(); // global variables
         } 
-    } else {
+    } else if (!itsTimeToStop) {
         match(Type::TYPE);
     }
 }
@@ -103,7 +121,7 @@ void Parser::instruction() {
         match(Type::DOTXCOMMA);
         instruction();
     }
-    if (lexemes[pos].type_ == Type::TYPE) {
+    if (lexemes[pos].type_ == Type::TYPE || lexemes[pos].type_ == Type::IDENTIFIER) {
         ooperator();
         instruction();
     }
@@ -121,6 +139,11 @@ void Parser::ooperator() {
         } else {
             match(Type::DOTXCOMMA);
         }
+    } else {
+        match(Type::IDENTIFIER);
+        match(Type::OPERATOR);
+        expression();
+        match(Type::DOTXCOMMA);
     }
 }
 
@@ -171,7 +194,7 @@ void Parser::ifinstruct() {
         } else if (lexemes[pos].value_ == "switch") {
             match(Type::IDENTIFIER);
             match(Type::LEFTBRASKET);
-            match(Type::STRING);
+            expression();
             match(Type::RIGHTBRASKET);
             match(Type::LEFTFIGUREBRASKET);
             cases();

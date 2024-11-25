@@ -9,6 +9,7 @@ public:
     ~Parser() = default;
     void parse() { program(); };
 private:
+    void saveFromSegFault();
     void declaration();
     void program() { declaration(); };
     void match(Type other);

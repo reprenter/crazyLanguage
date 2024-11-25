@@ -4,7 +4,23 @@ int main() {
         return 0;
         break;
     }
-    int m = 4.0;
 
+    
+
+
+    while (n > 0) {
+        n = n - 1;
+    }
+
+    if (n - 52 / b == 5) {
+        n = n - 5;
+        return 52 / 2;
+    }
+
+    case "52": {
+        n = n - 52;
+    }
+
+    int m = 4.0;
     return 0;
 }

@@ -10,6 +10,7 @@ public:
         std::map<char, BorTree*> childrens;
     };
     BOR() { head == nullptr; }
+    ~BOR() {}
     BOR(int a) {
         head = new BorTree;
         std::fstream cmds("keywords.txt");
