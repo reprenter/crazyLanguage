@@ -99,7 +99,7 @@ void Parser::instruction() {
         instruction();
     }
     else if (lexemes[pos].value_ == "switch") {
-        cases();
+        ifinstruct();
         instruction();
     }
     else if (lexemes[pos].value_ == "while") {
