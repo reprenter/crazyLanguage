@@ -9,7 +9,7 @@ public:
         bool terminal = false;
         std::map<char, BorTree*> childrens;
     };
-    BOR() { head == nullptr; }
+    BOR() { head = nullptr; }
     ~BOR() {}
     BOR(int a) {
         head = new BorTree;

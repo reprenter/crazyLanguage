@@ -5,7 +5,12 @@
 
 class Parser {
 public:
-    Parser() { lexemes = AnalyzeLexeme(); };
+    Parser() { 
+        lexemes = AnalyzeLexeme();
+    };
+    std::vector<Lexeme> Lexemes(){
+        return lexemes;
+    }
     ~Parser() = default;
     void parse() { program(); };
 private:

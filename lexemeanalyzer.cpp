@@ -172,7 +172,7 @@ std::vector<Lexeme> AnalyzeLexeme() {
             if (ans.size() != 0)if (ans[ans.size() - 1].value_ == NASTRING) ans[ans.size() - 1].value_ = Slise(lexeme, ans[ans.size() - 1].i, i);
             ans.push_back(lex);
             break;
-        case')':
+        case ')':
 
             oldLex = Type::RIGHTBRASKET;
             lex.column_number_ = j;
@@ -193,7 +193,7 @@ std::vector<Lexeme> AnalyzeLexeme() {
             if (ans.size() != 0)if (ans[ans.size() - 1].value_ == NASTRING) ans[ans.size() - 1].value_ = Slise(lexeme, ans[ans.size() - 1].i, i);
             ans.push_back(lex);
             break;
-        case'}':
+        case '}':
 
             oldLex = Type::RIGHTFIGUREBRASKET;
             lex.column_number_ = j;
@@ -204,7 +204,7 @@ std::vector<Lexeme> AnalyzeLexeme() {
             if (ans.size() != 0)if (ans[ans.size() - 1].value_ == NASTRING) ans[ans.size() - 1].value_ = Slise(lexeme, ans[ans.size() - 1].i, i);
             ans.push_back(lex);
             break;
-        case'[':
+        case '[':
 
             oldLex = Type::LEFTSQUAREBRASKET;
             lex.column_number_ = j;
@@ -215,7 +215,7 @@ std::vector<Lexeme> AnalyzeLexeme() {
             if (ans.size() != 0)if (ans[ans.size() - 1].value_ == NASTRING) ans[ans.size() - 1].value_ = Slise(lexeme, ans[ans.size() - 1].i, i);
             ans.push_back(lex);
             break;
-        case']':
+        case ']':
 
             oldLex = Type::RIGHTSQUAREBRASKET;
             lex.column_number_ = j;
@@ -226,7 +226,7 @@ std::vector<Lexeme> AnalyzeLexeme() {
             if (ans.size() != 0)if (ans[ans.size() - 1].value_ == NASTRING) ans[ans.size() - 1].value_ = Slise(lexeme, ans[ans.size() - 1].i, i);
             ans.push_back(lex);
             break;
-        case':':
+        case ':':
             oldLex = Type::COLON;
             lex.column_number_ = j;
             lex.i = i;
@@ -236,7 +236,7 @@ std::vector<Lexeme> AnalyzeLexeme() {
             if (ans.size() != 0)if (ans[ans.size() - 1].value_ == NASTRING) ans[ans.size() - 1].value_ = Slise(lexeme, ans[ans.size() - 1].i, i);
             ans.push_back(lex);
             break;
-        case';':
+        case ';':
             oldLex = Type::DOTXCOMMA;
             lex.column_number_ = j;
             lex.i = i;
@@ -247,10 +247,13 @@ std::vector<Lexeme> AnalyzeLexeme() {
             ans.push_back(lex);
             break;
         }
-        if (Bor.Find(ans[ans.size() - 1].value_) and ans[ans.size() - 1].type_ == Type::IDENTIFIER)
-            ans[ans.size() - 1].type_ = Type::KEYWORD;
-        else if (ans[ans.size() - 1].value_ == "true" or ans[ans.size() - 1].value_ == "false" and ans[ans.size() - 1].type_ == Type::IDENTIFIER) ans[ans.size() - 1].type_ == Type::BOOLEAN;
+        if (ans[ans.size() - 1].value_ == "true" or ans[ans.size() - 1].value_ == "false" and ans[ans.size() - 1].type_ == Type::IDENTIFIER) ans[ans.size() - 1].type_ == Type::BOOLEAN;
         else if (isType(ans[ans.size() - 1]) and ans[ans.size() - 1].type_ == Type::IDENTIFIER) ans[ans.size() - 1].type_ = Type::TYPE;
+    }
+    for(auto& i : ans){
+        if(i.type_ == Type::IDENTIFIER and Bor.Find(i.value_)){
+            i.type_ = Type::KEYWORD;
+        }
     }
     return ans;
 }

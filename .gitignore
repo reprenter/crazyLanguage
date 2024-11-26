@@ -1,2 +1,7 @@
 code.txt
-main
+build
+CMakeLists.txt
+main.obj
+main.pdb
+vc140.pdb
+tasks.json
