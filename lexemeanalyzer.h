@@ -4,24 +4,25 @@
 #include "Bor.h"
 
 enum Type {
-    KEYWORD, // +
-    IDENTIFIER, // +
-    INTEGER, //+
-    STRING, // +
-    CHARACTER, // +
-    TYPE,
-    BOOLEAN, // +
-    OPERATOR, // +
-    NONE,
-    COMMA, //,
-    LEFTBRASKET, //(
-    RIGHTBRASKET, //)    
+    KEYWORD, // base
+    IDENTIFIER, // base
+    INTEGER, // int
+    FLOAT, // float
+    STRING, // string with ""
+    CHARACTER, // char with ''
+    TYPE, // kwords double, int ect.
+    BOOLEAN, // true or false kwords
+    OPERATOR, // operation kwords
+    NONE, // empty
+    COMMA, // ,
+    LEFTBRASKET, // (
+    RIGHTBRASKET, // )    
     LEFTFIGUREBRASKET, // {
     RIGHTFIGUREBRASKET, // }
-    LEFTSQUAREBRASKET, //[
-    RIGHTSQUAREBRASKET, //]
-    COLON, //:
-    DOTXCOMMA //;
+    LEFTSQUAREBRASKET, // [
+    RIGHTSQUAREBRASKET, // ]
+    COLON, // :
+    DOTXCOMMA // ;
 };
 
 const std::string NASTRING = "~~~~~~";

@@ -1,4 +1,6 @@
 #include "lexemeanalyzer.h"
+#include <string>
+#include <algorithm>
 
 bool isType(Lexeme lex) {
     if (lex.value_ == "int" or lex.value_ == "string" or lex.value_ == "bool" or lex.value_ == "char") return true;
@@ -253,6 +255,9 @@ std::vector<Lexeme> AnalyzeLexeme() {
     for(auto& i : ans){
         if(i.type_ == Type::IDENTIFIER and Bor.Find(i.value_)){
             i.type_ = Type::KEYWORD;
+        }
+        else if(i.type_ == Type::INTEGER and find(i.value_.begin(), i.value_.end(), '.') != i.value_.end()){
+            i.type_ = Type::FLOAT;
         }
     }
     return ans;
