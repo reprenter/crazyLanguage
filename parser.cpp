@@ -278,13 +278,7 @@ void Parser::expr5() {
 
 void Parser::expr6() {
     if (lexemes[pos].type_ == Type::STRING) {
-        if (lexemes[pos].value_ != std::to_string('"')) {
-            throw std::invalid_argument("SYNTAX ERROR\nInvalid expression in line " + std::to_string(lexemes[pos].line_number_ + 1));
-        }
         match(Type::STRING);
-        if (lexemes[pos].value_ != std::to_string('"')) {
-            throw std::invalid_argument("SYNTAX ERROR\nInvalid expression in line " + std::to_string(lexemes[pos].line_number_ + 1));
-        }
     } else if (lexemes[pos].type_ == Type::INTEGER) {
         match(Type::INTEGER);
     } else if (lexemes[pos].type_ == Type::IDENTIFIER) {
@@ -296,6 +290,9 @@ void Parser::expr6() {
         expression();
         match(Type::RIGHTBRASKET);
     } else {
-        throw std::invalid_argument("SYNTAX ERROR\nInvalid expression in line " + std::to_string(lexemes[pos].line_number_ + 1));
+        if (pos >= lexemes.size()) {
+            throw std::runtime_error("SYNTAX ERROR\nInvalid expression in line " + std::to_string(lexemes[pos].line_number_ + 1));
+        }
+        throw std::runtime_error("SYNTAX ERROR\nInvalid expression in line " + std::to_string(lexemes[pos].line_number_ + 1));
     }
 }
