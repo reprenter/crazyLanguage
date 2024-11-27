@@ -322,6 +322,8 @@ void Parser::expr6() {
         match(Type::STRING);
     } else if (lexemes[pos].type_ == Type::INTEGER) {
         match(Type::INTEGER);
+    } else if (lexemes[pos].type_ == Type::FLOAT) {
+        match(Type::FLOAT);
     } else if (lexemes[pos].type_ == Type::IDENTIFIER) {
         match(Type::IDENTIFIER);
     } else if (lexemes[pos].type_ == Type::BOOLEAN) {
