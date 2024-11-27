@@ -2,6 +2,47 @@
 
 bool itsTimeToStop = false;
 
+std::string convertTypeToString(Type type) {
+    switch (type) {
+    case Type::NONE:
+        return "NONE";
+    case Type::TYPE:
+        return "TYPE";
+    case Type::IDENTIFIER:
+        return "IDENTIFIER";
+    case Type::STRING:
+        return "STRING LITERAL";
+    case Type::INTEGER:
+        return "INTEGER";
+    case Type::BOOLEAN:
+        return "BOOLEAN";
+    case Type::LEFTBRASKET:
+        return "LEFTBRASKET";
+    case Type::RIGHTBRASKET:
+        return "RIGHTBRASKET";
+    case Type::OPERATOR:
+        return "OPERATOR";
+    case Type::COMMA:
+        return "COMMA";
+    case Type::DOTXCOMMA:
+        return "DOTXCOMMA";
+    case Type::LEFTFIGUREBRASKET:
+        return "LEFTFIGUREBRASKET";
+    case Type::RIGHTFIGUREBRASKET:
+        return "RIGHTFIGUREBRASKET";
+    case Type::LEFTSQUAREBRASKET:
+        return "LEFTSQUAREBRASKET";
+    case Type::RIGHTSQUAREBRASKET:
+        return "RIGHTSQUAREBRASKET";
+    case Type::COLON:
+        return "COLON";
+    case Type::KEYWORD:
+        return "KEYWORD";
+    default:
+        return "UNKNOWN";
+    }
+}
+
 void Parser::saveFromSegFault() {
     Lexeme lex1, lex2;
     lex1.type_ = Type::NONE;
@@ -24,7 +65,7 @@ void Parser::match(Type other) {
         return;
     }
     else {
-        throw std::runtime_error("SYNTAX ERROR\nUnexpected token in line " + std::to_string(lexemes[pos].line_number_ + 1) + ": " + lexemes[pos].value_ + "\n Expected: " + std::to_string(other) + ", but got: " + std::to_string(lexemes[pos].type_));
+        throw std::runtime_error("SYNTAX ERROR\nUnexpected token in line " + std::to_string(lexemes[pos].line_number_ + 1) + ": " + lexemes[pos].value_ + "\n Expected: " + convertTypeToString(other) + ", but got: " + convertTypeToString(lexemes[pos].type_));
     }
 }
 

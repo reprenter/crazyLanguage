@@ -5,13 +5,12 @@
 #include "lexemeanalyzer.h"
 #include "parser.h"
 
-
 int main() {
     // std::cout << "Enter source file name: ";
-    // std::string filename;
+    // std::string filename;x
     // std::cin >> filename;
 
-    // // ������ �����
+    // // ������    �����
     // std::ifstream file(filename);
 
     // if (!file.is_open()) {
@@ -23,13 +22,11 @@ int main() {
     // buffer << file.rdbuf();
     // std::string sourceCode = buffer.str();
 
+    
     try {
         Parser parser;
         parser.parse(); // ������ ��������������� �������
         std::cout << "Process completed successfully" << '\n';
-        for(auto i : parser.Lexemes()){
-            std::cout << i.value_ << ' ' << i.type_ << '\n';
-        }
     } catch (std::runtime_error& e) {
         std::cout << e.what() << '\n';
     }
