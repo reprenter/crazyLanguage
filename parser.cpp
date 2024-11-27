@@ -65,7 +65,7 @@ void Parser::match(Type other) {
         return;
     }
     else {
-        throw std::runtime_error("SYNTAX ERROR\nUnexpected token in line " + std::to_string(lexemes[pos].line_number_ + 1) + ": " + lexemes[pos].value_ + "\n Expected: " + convertTypeToString(other) + ", but got: " + convertTypeToString(lexemes[pos].type_));
+        throw std::runtime_error("SYNTAX ERROR\nUnexpected token in line " + std::to_string(lexemes[pos].line_number_ + 1) + ": " + lexemes[pos].value_ + "\nExpected: " + convertTypeToString(other) + ", but got: " + convertTypeToString(lexemes[pos].type_));
     }
 }
 
@@ -82,7 +82,7 @@ void Parser::declaration() {
             variable();
             declaration(); // global variables
         } 
-    } else if (!itsTimeToStop) {
+    } else if (itsTimeToStop) {
         match(Type::TYPE);
     }
 }
