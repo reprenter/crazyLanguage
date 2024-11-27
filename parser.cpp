@@ -219,16 +219,16 @@ void Parser::step() {
 }
 
 void Parser::ifinstruct() {
-    if (lexemes[pos].type_ == Type::IDENTIFIER) {
+    if (lexemes[pos].type_ == Type::KEYWORD) {
         if (lexemes[pos].value_ == "if") {
             match(Type::KEYWORD);
             match(Type::LEFTBRASKET);
             expression();
             match(Type::RIGHTBRASKET);
             block();
-            if (lexemes[pos].type_ == Type::IDENTIFIER) {
+            if (lexemes[pos].type_ == Type::KEYWORD) {
                 if (lexemes[pos].value_ == "else") {
-                    match(Type::IDENTIFIER);
+                    match(Type::KEYWORD);
                     block();
                 }
             }
@@ -245,7 +245,7 @@ void Parser::ifinstruct() {
 }
 
 void Parser::cases() {
-    if (lexemes[pos].type_ == Type::IDENTIFIER) {
+    if (lexemes[pos].type_ == Type::KEYWORD) {
         if (lexemes[pos].value_ == "case") {
             match(Type::KEYWORD);
             match(Type::STRING);
