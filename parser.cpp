@@ -152,13 +152,13 @@ void Parser::instruction() {
         instruction();
     }
     if (lexemes[pos].value_ == "return") {
-        match(Type::IDENTIFIER);
+        match(Type::KEYWORD);
         expression();
         match(Type::DOTXCOMMA);
         instruction();
     }
     if (lexemes[pos].value_ == "break" || lexemes[pos].value_ == "continue") {
-        match(Type::IDENTIFIER);
+        match(Type::KEYWORD);
         match(Type::DOTXCOMMA);
         instruction();
     }
@@ -189,15 +189,15 @@ void Parser::ooperator() {
 }
 
 void Parser::cycle() {
-    if (lexemes[pos].type_ == Type::IDENTIFIER) {
+    if (lexemes[pos].type_ == Type::KEYWORD) {
         if (lexemes[pos].value_ == "while") {
-            match(Type::IDENTIFIER);
+            match(Type::KEYWORD);
             match(Type::LEFTBRASKET);
             expression();
             match(Type::RIGHTBRASKET);
             block();
         } else if (lexemes[pos].value_ == "for") {
-            match(Type::IDENTIFIER);
+            match(Type::KEYWORD);
             match(Type::LEFTBRASKET);
             initialization();
             // match(Type::DOTXCOMMA);
@@ -221,7 +221,7 @@ void Parser::step() {
 void Parser::ifinstruct() {
     if (lexemes[pos].type_ == Type::IDENTIFIER) {
         if (lexemes[pos].value_ == "if") {
-            match(Type::IDENTIFIER);
+            match(Type::KEYWORD);
             match(Type::LEFTBRASKET);
             expression();
             match(Type::RIGHTBRASKET);
@@ -233,7 +233,7 @@ void Parser::ifinstruct() {
                 }
             }
         } else if (lexemes[pos].value_ == "switch") {
-            match(Type::IDENTIFIER);
+            match(Type::KEYWORD);
             match(Type::LEFTBRASKET);
             expression();
             match(Type::RIGHTBRASKET);
@@ -247,7 +247,7 @@ void Parser::ifinstruct() {
 void Parser::cases() {
     if (lexemes[pos].type_ == Type::IDENTIFIER) {
         if (lexemes[pos].value_ == "case") {
-            match(Type::IDENTIFIER);
+            match(Type::KEYWORD);
             match(Type::STRING);
             match(Type::COLON);
             block();
