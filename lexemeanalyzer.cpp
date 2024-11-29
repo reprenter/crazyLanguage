@@ -250,8 +250,6 @@ std::vector<Lexeme> AnalyzeLexeme() {
             break;
         }
     }
-    int a = 0;
-    int b = 0;
     for(auto& i : ans){
         if(i.type_ == Type::IDENTIFIER and Bor.Find(i.value_)){
             i.type_ = Type::KEYWORD;
