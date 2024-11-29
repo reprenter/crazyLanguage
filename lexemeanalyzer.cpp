@@ -249,9 +249,9 @@ std::vector<Lexeme> AnalyzeLexeme() {
             ans.push_back(lex);
             break;
         }
-        if (ans[ans.size() - 1].value_ == "true" or ans[ans.size() - 1].value_ == "false" and ans[ans.size() - 1].type_ == Type::IDENTIFIER) ans[ans.size() - 1].type_ == Type::BOOLEAN;
-        else if (isType(ans[ans.size() - 1]) and ans[ans.size() - 1].type_ == Type::IDENTIFIER) ans[ans.size() - 1].type_ = Type::TYPE;
     }
+    int a = 0;
+    int b = 0;
     for(auto& i : ans){
         if(i.type_ == Type::IDENTIFIER and Bor.Find(i.value_)){
             i.type_ = Type::KEYWORD;
@@ -259,6 +259,8 @@ std::vector<Lexeme> AnalyzeLexeme() {
         else if(i.type_ == Type::INTEGER and find(i.value_.begin(), i.value_.end(), '.') != i.value_.end()){
             i.type_ = Type::FLOAT;
         }
+        else if ((i.value_ == "true" or i.value_ == "false") and i.type_ == Type::IDENTIFIER) i.type_ = Type::BOOLEAN;
+        else if (isType(i) and i.type_ == Type::IDENTIFIER) i.type_ = Type::TYPE;
     }
     return ans;
 }
