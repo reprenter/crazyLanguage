@@ -151,20 +151,27 @@ void Parser::instruction() {
         cycle();
         instruction();
     }
-    if (lexemes[pos].value_ == "return") {
+    else if (lexemes[pos].value_ == "return") {
         match(Type::KEYWORD);
         expression();
         match(Type::DOTXCOMMA);
         instruction();
     }
-    if (lexemes[pos].value_ == "break" || lexemes[pos].value_ == "continue") {
+    else if (lexemes[pos].value_ == "break" || lexemes[pos].value_ == "continue") {
         match(Type::KEYWORD);
         match(Type::DOTXCOMMA);
         instruction();
     }
-    if (lexemes[pos].type_ == Type::TYPE || lexemes[pos].type_ == Type::IDENTIFIER) {
-        ooperator();
+    else if (lexemes[pos].type_ == Type::TYPE || lexemes[pos].type_ == Type::IDENTIFIER) {
+        variable();
         instruction();
+    }
+    else if (lexemes[pos].value_ == "}") {
+        // match(Type::RIGHTFIGUREBRASKET);
+        return;
+    }
+    else {
+        throw std::runtime_error("SYNTAX ERROR\nUnexpected token in line " + std::to_string(lexemes[pos].line_number_ + 1) + "\nExpected instruction");
     }
 }
 
