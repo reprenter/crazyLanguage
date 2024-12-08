@@ -3,7 +3,7 @@
 #include <algorithm>
 
 bool isType(Lexeme lex) {
-    if (lex.value_ == "int" or lex.value_ == "string" or lex.value_ == "bool" or lex.value_ == "char") return true;
+    if (lex.value_ == "int" or lex.value_ == "string" or lex.value_ == "bool" or lex.value_ == "char" or lex.value_ == "float") return true;
     return false;
 }
 
