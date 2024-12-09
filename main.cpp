@@ -22,15 +22,25 @@ int main() {
     // buffer << file.rdbuf();
     // std::string sourceCode = buffer.str();
 
-    
+    Parser parser;
     try {
-        Parser parser;
         parser.parse(); // ������ ��������������� �������
         std::cout << "Process completed successfully" << '\n';
     } catch (std::runtime_error& e) {
         std::cout << e.what() << '\n';
     }
+    SymbolTable symbolTable;
 
-    
+   std::vector<Lexeme> lexemes;
+
+   try {
+       SemanticAnalyzer semanticAnalyzer(symbolTable, lexemes);
+       semanticAnalyzer.analyze();
+       std::cout << "Semantic analysis passed." << std::endl;
+
+   } catch (const std::runtime_error& e) {
+       std::cerr << "Semantic error: " << e.what() << std::endl;
+
+   }
     return 0;
 }

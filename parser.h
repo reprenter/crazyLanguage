@@ -2,6 +2,7 @@
 #include <vector>
 #include "lexemeanalyzer.h"
 #include <iostream>
+#include "semantics.h"
 
 class Parser {
 public:

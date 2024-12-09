@@ -1,7 +1,5 @@
 #include "parser.h"
 
-bool itsTimeToStop = false;
-
 std::string convertTypeToString(Type type) {
     switch (type) {
     case Type::NONE:
@@ -17,9 +15,9 @@ std::string convertTypeToString(Type type) {
     case Type::BOOLEAN:
         return "BOOLEAN";
     case Type::LEFTBRASKET:
-        return "LEFTBRASKET";
+        return "LEFT BRASKET";
     case Type::RIGHTBRASKET:
-        return "RIGHTBRASKET";
+        return "RIGHT BRASKET";
     case Type::OPERATOR:
         return "OPERATOR";
     case Type::COMMA:
@@ -27,13 +25,13 @@ std::string convertTypeToString(Type type) {
     case Type::DOTXCOMMA:
         return "DOTXCOMMA";
     case Type::LEFTFIGUREBRASKET:
-        return "LEFTFIGUREBRASKET";
+        return "LEFT FIGURE BRASKET";
     case Type::RIGHTFIGUREBRASKET:
-        return "RIGHTFIGUREBRASKET";
+        return "RIGHT FIGURE BRASKET";
     case Type::LEFTSQUAREBRASKET:
-        return "LEFTSQUAREBRASKET";
+        return "LEFT SQUARE BRASKET";
     case Type::RIGHTSQUAREBRASKET:
-        return "RIGHTSQUAREBRASKET";
+        return "RIGHT SQUARE BRASKET";
     case Type::COLON:
         return "COLON";
     case Type::KEYWORD:
@@ -60,7 +58,6 @@ void Parser::match(Type other) {
         ++pos;
         if (pos >= lexemes.size()) {
             --pos;
-            itsTimeToStop = true;
         }
         return;
     }
@@ -82,8 +79,6 @@ void Parser::declaration() {
             variable();
             declaration(); // global variables
         } 
-    } else if (itsTimeToStop) {
-        match(Type::TYPE);
     }
 }
 
@@ -103,10 +98,6 @@ void Parser::variable() {
         match(Type::OPERATOR);
         expression();
         match(Type::DOTXCOMMA);
-    }
-    else if (lexemes[pos].value_ == ",") {
-        match(Type::COMMA);
-        variable();
     }
     else if (lexemes[pos].value_ == ";") {
         match(Type::DOTXCOMMA);
@@ -131,6 +122,7 @@ void Parser::block() {
     match(Type::LEFTFIGUREBRASKET);
     instruction();
     match(Type::RIGHTFIGUREBRASKET);
+
 }
 
 
@@ -162,8 +154,16 @@ void Parser::instruction() {
         match(Type::DOTXCOMMA);
         instruction();
     }
-    else if (lexemes[pos].type_ == Type::TYPE || lexemes[pos].type_ == Type::IDENTIFIER) {
+    else if (lexemes[pos].type_ == Type::TYPE) {
         variable();
+        instruction();
+    }
+    else if (lexemes[pos].type_ == IDENTIFIER) {
+        ooperator();
+        instruction();
+    }
+    else if (lexemes[pos].value_ == "{") {
+        block();
         instruction();
     }
     else if (lexemes[pos].value_ == "}") {
@@ -333,6 +333,11 @@ void Parser::expr6() {
         match(Type::FLOAT);
     } else if (lexemes[pos].type_ == Type::IDENTIFIER) {
         match(Type::IDENTIFIER);
+        if (lexemes[pos].type_ == Type::LEFTBRASKET) {
+            match(Type::LEFTBRASKET);
+            expression();
+            match(Type::RIGHTBRASKET);
+        }
     } else if (lexemes[pos].type_ == Type::BOOLEAN) {
         match(Type::BOOLEAN);
     } else if (lexemes[pos].type_ == Type::LEFTBRASKET) {

@@ -1,13 +1,14 @@
 int main() {
-    int n = 4;
+    int n = 4, z = 52;
     float m = n;
+    int m = 52;
     for (int i = 0; gh; 1, 1, 1) {
         return 0;
         break;
     }
 
     while (n > 0) {
-        n = n - 1;
+        n = m - 1;
     }
 
     if (n - 52 / b == 5) {
@@ -27,4 +28,5 @@ int main() {
 
     int m = 4.0;
     return 0;
-}
+    int k = 0;
+    }

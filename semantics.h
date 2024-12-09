@@ -1,99 +1,123 @@
+#pragma once
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <vector>
 #include <stdexcept>
+#include "parser.h"
 
-enum class NodeType {
-    Number,
-    Variable,
-    BinaryOp
+enum NodeType {
+    VariableDeclaration,
+    VariableUsage,
+    Assignment,
+    Block
 };
 
 struct ASTNode {
     NodeType type;
-    union {
-        int value;                     // Для чисел
-        std::string* varName;          // Для переменных
-        struct {                       // Для бинарных операций
-            ASTNode* left;
-            ASTNode* right;
-            char op;                   // Оператор: +, -, *, /
-        };
-    };
-
-    // Конструкторы для различных типов узлов
-    ASTNode(int val) : type(NodeType::Number) { value = val; }
-    ASTNode(std::string name) : type(NodeType::Variable) { varName = new std::string(name); }
-    ASTNode(ASTNode* l, char oper, ASTNode* r) : type(NodeType::BinaryOp) {
-        left = l; op = oper; right = r;
-    }
-
-    ~ASTNode() {
-        if (type == NodeType::Variable) delete varName;
-        else if (type == NodeType::BinaryOp) {
-            delete left;
-            delete right;
-        }
-    }
+    std::string varName; // Имя переменной
+    std::string varType; // Тип переменной, например "int", "float" и т.д.
+    
+    ASTNode(NodeType t, const std::string& name, const std::string& type)
+        : type(t), varName(name), varType(type) {}
 };
 
 class SymbolTable {
 public:
-    void declare(const std::string& name, const std::string& type) {
-        if (symbols.count(name)) throw std::runtime_error("Variable already declared");
+    void declareVariable(const std::string& name, const std::string& type) {
+        if (symbols.count(name)) {
+            throw std::runtime_error("Variable already declared: " + name);
+        }
         symbols[name] = type;
     }
 
-    std::string lookup(const std::string& name) {
-        if (!symbols.count(name)) throw std::runtime_error("Variable not declared");
+    void useVariable(const std::string& name) {
+        if (!symbols.count(name)) {
+            throw std::runtime_error("Variable not declared: " + name);
+        }
+    }
+
+    std::string getVariableType(const std::string& name) {
         return symbols[name];
     }
 
 private:
-    std::unordered_map<std::string, std::string> symbols;
+    std::unordered_map<std::string, std::string> symbols; 
 };
 
 class SemanticAnalyzer {
 public:
-    SemanticAnalyzer(SymbolTable& symTable) : symbolTable(symTable) {}
+    SemanticAnalyzer(SymbolTable& symTable, const std::vector<Lexeme>& lexemes)
+      : symbolTable(symTable), lexemes(lexemes), current(0) {}
 
-    void analyze(ASTNode* node) {
-        switch (node->type) {
-            case NodeType::Number:
-                break;
-
-            case NodeType::Variable:
-                // Проверка существования переменной
-                symbolTable.lookup(*node->varName);
-                break;
-
-            case NodeType::BinaryOp:
-                analyze(node->left);
-                analyze(node->right);
-                checkTypes(node);
-                break;
-
-            default:
-                throw std::runtime_error("Unknown node type");
+    void analyze() {
+        while (current < lexemes.size()) {
+            parseStatement();
         }
     }
 
 private:
     SymbolTable& symbolTable;
+    const std::vector<Lexeme>& lexemes;
 
-    void checkTypes(ASTNode* node) {
-        std::string leftType = getType(node->left);
-        std::string rightType = getType(node->right);
+    size_t current;
 
-        if (leftType != rightType)
-            throw std::runtime_error("Type mismatch in binary operation");
-    }
+    void parseStatement() {
+        if (lexemes[current].type_ == KEYWORD && lexemes[current].value_ == "int") {
+            parseVariableDeclaration("int");
+        } else if (lexemes[current].type_ == KEYWORD && lexemes[current].value_ == "float") {
+            parseVariableDeclaration("float");
+        } else if (lexemes[current].type_ == IDENTIFIER) {
+            parseVariableUsageOrAssignment();
+        } else if (lexemes[current].type_ == LEFTFIGUREBRASKET) {
+            parseBlock();
+        } else {
+            throw std::runtime_error("Unexpected token: " + lexemes[current].value_);
+        }
 
-    std::string getType(ASTNode* node) {
-        if (node->type == NodeType::Number) return "int"; // Простой пример с типом int
-        if (node->type == NodeType::Variable)
-            return symbolTable.lookup(*node->varName);
+        current++;
         
-        return "unknown";
-    }
+        while (current < lexemes.size() && lexemes[current].type_ == DOTXCOMMA) current++;
+        
+        if (current < lexemes.size() && lexemes[current].type_ != RIGHTFIGUREBRASKET)
+          throw std::runtime_error("Expected ';' or '}'");
+      current++;
+  }
+
+  void parseVariableDeclaration(const std::string& type) {
+      current++; // Skip the type keyword
+      if (lexemes[current].type_ != IDENTIFIER) {
+          throw std::runtime_error("Expected variable name after type declaration");
+      }
+      std::string varName = lexemes[current++].value_;
+      symbolTable.declareVariable(varName, type);
+  }
+
+  void parseVariableUsageOrAssignment() { 
+      auto identifierName = lexemes[current++].value_; 
+      symbolTable.useVariable(identifierName); 
+
+      if (current < lexemes.size() && lexemes[current].type_ == OPERATOR && 
+          lexemes[current].value_ == "=") { 
+          current++; // Skip '='
+          auto valueExpr = parseExpression(); // Process right-hand side
+          // Here you would typically check types for assignment compatibility
+      }
+  }
+
+  ASTNode* parseBlock() { 
+      current++; // Skip '{'
+      while(lexemes[current].type_ != RIGHTFIGUREBRASKET){ 
+          parseStatement(); 
+      } 
+      current++;
+  }
+
+  ASTNode* parseExpression() { 
+       if(lexemes[current].type_ == INTEGER){ 
+           return new ASTNode(NodeType::VariableUsage, "", "int"); 
+       }else{ 
+           return new ASTNode(NodeType::VariableUsage, lexemes[current++].value_, ""); 
+       } 
+   }
 };
