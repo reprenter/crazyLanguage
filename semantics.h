@@ -63,13 +63,13 @@ private:
     size_t current;
 
     void parseStatement() {
-        if (lexemes[current].type_ == KEYWORD && lexemes[current].value_ == "int") {
+        if (lexemes[current].type_ == Type::TYPE && lexemes[current].value_ == "int") {
             parseVariableDeclaration("int");
-        } else if (lexemes[current].type_ == KEYWORD && lexemes[current].value_ == "float") {
+        } else if (lexemes[current].type_ == Type::TYPE && lexemes[current].value_ == "float") {
             parseVariableDeclaration("float");
-        } else if (lexemes[current].type_ == IDENTIFIER) {
+        } else if (lexemes[current].type_ == Type::IDENTIFIER) {
             parseVariableUsageOrAssignment();
-        } else if (lexemes[current].type_ == LEFTFIGUREBRASKET) {
+        } else if (lexemes[current].type_ == Type::LEFTFIGUREBRASKET) {
             parseBlock();
         } else {
             throw std::runtime_error("Unexpected token: " + lexemes[current].value_);
