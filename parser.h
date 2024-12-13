@@ -9,6 +9,8 @@ public:
     Parser() { 
         lexemes = AnalyzeLexeme();
     };
+    Parser(std::vector<Lexeme> lex)
+        : lexemes(lex) {}
     std::vector<Lexeme> Lexemes(){
         return lexemes;
     }

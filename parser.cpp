@@ -331,7 +331,10 @@ void Parser::expr6() {
         match(Type::INTEGER);
     } else if (lexemes[pos].type_ == Type::FLOAT) {
         match(Type::FLOAT);
-    } else if (lexemes[pos].type_ == Type::IDENTIFIER) {
+    } else if(lexemes[pos].type_ == Type::CHARACTER){
+        match(Type::CHARACTER);
+    }
+    else if (lexemes[pos].type_ == Type::IDENTIFIER) {
         match(Type::IDENTIFIER);
         if (lexemes[pos].type_ == Type::LEFTBRASKET) {
             match(Type::LEFTBRASKET);
