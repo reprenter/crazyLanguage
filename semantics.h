@@ -72,25 +72,32 @@ private:
         } else if (lexemes[current].type_ == Type::LEFTFIGUREBRASKET) {
             parseBlock();
         } else {
-            throw std::runtime_error("Unexpected token: " + lexemes[current].value_);
+            throw std::runtime_error("Unexpected token: " + lexemes[current].value_ + " on " + std::to_string(lexemes[current].line_number_ + 1) + " line");
         }
 
         current++;
         
         while (current < lexemes.size() && lexemes[current].type_ == DOTXCOMMA) current++;
         
-        if (current < lexemes.size() && lexemes[current].type_ != RIGHTFIGUREBRASKET)
-          throw std::runtime_error("Expected ';' or '}'");
-      current++;
+        //if (current < lexemes.size() && lexemes[current].type_ != RIGHTFIGUREBRASKET)
+        //  throw std::runtime_error("Expected ';' or '}' on " + std::to_string(lexemes[current].line_number_ + 1) + " line");
+        //current++;
   }
 
   void parseVariableDeclaration(const std::string& type) {
-      current++; // Skip the type keyword
-      if (lexemes[current].type_ != IDENTIFIER) {
-          throw std::runtime_error("Expected variable name after type declaration");
-      }
-      std::string varName = lexemes[current++].value_;
-      symbolTable.declareVariable(varName, type);
+        current++; // Skip the type keyword
+        if (lexemes[current].type_ != IDENTIFIER) {
+            throw std::runtime_error("Expected variable name after type declaration");
+        }
+        std::string varName = lexemes[current].value_;
+        symbolTable.declareVariable(varName, type);
+        if(lexemes[current+1].type_ == Type::OPERATOR and lexemes[current+1].value_ == "="){
+            parseVariableUsageOrAssignment();
+        }
+        if(lexemes[current].type_ == Type::COMMA){
+            current++;
+            parseVariableDeclaration(type);
+        }
   }
 
   void parseVariableUsageOrAssignment() { 
