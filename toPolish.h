@@ -24,7 +24,7 @@ int precedence(const Lexeme& lexeme) {
 std::vector<Lexeme> toPolishNotation(const std::vector<Lexeme>& lexemes) {
     std::vector<Lexeme> output; // Вектор для хранения результата
     std::stack<Lexeme> operators; // Стек для операторов
-    std::vector<int> loopStartIndices; // Вектор для хранения индексов начала циклов
+    std::stack<int> loopStartIndices; // Стек для хранения индексов начала циклов
 
     for (const auto& lexeme : lexemes) {
         if (lexeme.type_ == IDENTIFIER || lexeme.type_ == INTEGER || lexeme.type_ == FLOAT) {
@@ -37,18 +37,20 @@ std::vector<Lexeme> toPolishNotation(const std::vector<Lexeme>& lexemes) {
                 operators.pop();
             }
             operators.push(lexeme); // Добавляем текущий оператор в стек
-        } else if (lexeme.type_ == LEFTBRASKET || lexeme.type_ == RIGHTBRASKET) {
-            // Игнорируем скобки
-            continue;
+        } else if (lexeme.type_ == LEFTBRASKET) {
+            operators.push(lexeme); // Добавляем открывающую скобку в стек
+        } else if (lexeme.type_ == RIGHTBRASKET) { // Изменено на RIGHTBRASKET
+            // Обрабатываем стек до тех пор, пока не встретим открывающую скобку
+            while (!operators.empty() && operators.top().type_ != LEFTBRASKET) {
+                output.push_back(operators.top());
+                operators.pop();
+            }
+            if (!operators.empty()) {
+                operators.pop(); // Удаляем открывающую скобку
+            }
         } else if (lexeme.type_ == KEYWORD && (lexeme.value_ == "for" || lexeme.value_ == "while")) {
-            loopStartIndices.push_back(output.size()); // Сохраняем индекс начала тела цикла
-
-            Lexeme falseLabel;
-            falseLabel.value_ = "L" + std::to_string(labelCounter++); // Метка перехода по лжи
-            falseLabel.type_ = IDENTIFIER;
-
-            output.push_back(falseLabel); // Добавляем метку перехода по лжи в выходной массив
-            continue; // Игнорируем ключевые слова for и while
+            loopStartIndices.push(output.size()); // Сохраняем индекс начала цикла
+            operators.push(lexeme); // Обрабатываем цикл for или while
         }
     }
 
@@ -59,13 +61,16 @@ std::vector<Lexeme> toPolishNotation(const std::vector<Lexeme>& lexemes) {
     }
 
     // Обработка меток для циклов
-    for (int startIndex : loopStartIndices) {
-        // Создаем метку для перехода к началу тела цикла с номером метки
+    while (!loopStartIndices.empty()) {
+        int startIndex = loopStartIndices.top();
+        loopStartIndices.pop();
+
+        // Создаем метку для перехода к началу тела цикла
         Lexeme loopLabel;
-        loopLabel.value_ = "L" + std::to_string(labelCounter++); // Пример метки L<номер>
+        loopLabel.value_ = "L" + std::to_string(startIndex); // Пример метки с индексом начала цикла
         loopLabel.type_ = IDENTIFIER; // Используем тип IDENTIFIER для метки
 
-        output.insert(output.begin() + startIndex, loopLabel); // Вставляем метку в начало тела цикла
+        output.insert(output.begin() + startIndex, loopLabel); // Вставляем метку в выходной массив
 
         Lexeme jumpToStart;
         jumpToStart.value_ = "goto " + loopLabel.value_; // Создаем команду перехода к началу цикла
