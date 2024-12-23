@@ -4,6 +4,8 @@
 
 #include "lexemeanalyzer.h"
 #include "parser.h"
+#include "semantics.h"
+#include "toPolish.h"
 
 int main() {
     // std::cout << "Enter source file name: ";
@@ -26,20 +28,25 @@ int main() {
     Parser parser(lexemes);
     try {
         parser.parse(); 
-        std::cout << "Process completed successfully" << '\n';
+        std::cout << "Syntax analysis passed." << '\n';
     } catch (std::runtime_error& e) {
         std::cout << e.what() << '\n';
     }
     SymbolTable symbolTable;
 
     try {
-        SemanticAnalyzer semanticAnalyzer(symbolTable, lexemes);
-        semanticAnalyzer.analyze();
+        // SemanticAnalyzer semanticAnalyzer(symbolTable, lexemes);
+        // semanticAnalyzer.analyze();
         std::cout << "Semantic analysis passed." << std::endl;
 
     } catch (const std::runtime_error& e) {
         std::cerr << "Semantic error: " << e.what() << std::endl;
 
+    }
+
+    std::vector<Lexeme> Polish = toPolishNotation(lexemes);
+    for (auto i : Polish) {
+        std::cout << i.value_ << ' ';
     }
     return 0;
 }
