@@ -73,7 +73,7 @@ void Parser::declaration() {
 void Parser::function() {
     tid->enterScope();
     match(Type::TYPE);
-    tfid->declare(lexemes[pos].value_);
+    tfid->declare(lexemes[pos].value_, convertTypeToString(lexemes[pos].type_));
     match(Type::IDENTIFIER);
     match(Type::LEFTBRASKET);
     parameters();
@@ -83,7 +83,7 @@ void Parser::function() {
 
 void Parser::variable() {
     match(Type::TYPE);
-    tid->declare(lexemes[pos].value_);
+    tid->declare(lexemes[pos].value_, convertTypeToString(lexemes[pos].type_));
     match(Type::IDENTIFIER);
     if (lexemes[pos].value_ == "=") {
         match(Type::OPERATOR);
@@ -106,7 +106,7 @@ void Parser::parameters() {
 
 void Parser::parameter() {
     match(Type::TYPE);
-    tid->declare(lexemes[pos].value_);
+    tid->declare(lexemes[pos].value_, convertTypeToString(lexemes[pos].type_));
     match(Type::IDENTIFIER);
 }
 
