@@ -336,7 +336,7 @@ void Parser::expr6() {
             match(Type::RIGHTBRASKET);
         } else {
             if (!tid->isDeclared(lexemes[pos - 1].value_)) {
-                throw std::runtime_error("SEMANTICS ERROR\nVariable " + lexemes[pos].value_ + " is not declared in line " + std::to_string(lexemes[pos].line_number_ + 1));
+                throw std::runtime_error("SEMANTICS ERROR\nVariable " + lexemes[pos - 1].value_ + " is not declared in line " + std::to_string(lexemes[pos].line_number_ + 1));
             }
         }
     } else if (lexemes[pos].type_ == Type::BOOLEAN) {
