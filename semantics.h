@@ -15,7 +15,7 @@ class Scope {
         ids[id] = true;
     }
     bool isDeclared(std::string id) {
-        return ids.find(id) != ids.end();
+        return ids.empty() ? false : ids.find(id) != ids.end();
     }
     private:
     std::unordered_map<std::string, bool> ids;
@@ -43,12 +43,13 @@ class TID {
     }
 
     bool isDeclared(const std::string& name) {
+        bool ans = false;
         for (auto it = scopes.begin(); it != scopes.end(); ++it) {
-            if (!(*it)->isDeclared(name)) {
-                return false;
+            if ((*it)->isDeclared(name)) {
+                ans = true;
             }
         }
-        return true;
+        return ans;
     }
 
     private:
