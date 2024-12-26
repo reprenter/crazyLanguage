@@ -328,11 +328,13 @@ void Parser::expr6() {
     else if (lexemes[pos].type_ == Type::IDENTIFIER) {
         match(Type::IDENTIFIER);
         if (lexemes[pos].type_ == Type::LEFTBRASKET) {
-            if (!tfid->isDeclared(lexemes[pos].value_)) {
-                throw std::runtime_error("SEMANTICS ERROR\nFunction " + lexemes[pos].value_ + " is not declared in line " + std::to_string(lexemes[pos].line_number_ + 1));
+            if (!tfid->isDeclared(lexemes[pos - 1].value_)) {
+                throw std::runtime_error("SEMANTICS ERROR\nFunction " + lexemes[pos - 1].value_ + " is not declared in line " + std::to_string(lexemes[pos].line_number_ + 1));
             }
             match(Type::LEFTBRASKET);
-            expression();
+            if (lexemes[pos].type_ != Type::RIGHTBRASKET) {
+                expression();
+            }
             match(Type::RIGHTBRASKET);
         } else {
             if (!tid->isDeclared(lexemes[pos - 1].value_)) {
@@ -346,9 +348,6 @@ void Parser::expr6() {
         expression();
         match(Type::RIGHTBRASKET);
     } else {
-        if (pos >= lexemes.size()) {
-            throw std::runtime_error("SYNTAX ERROR\nInvalid expression in line " + std::to_string(lexemes[pos].line_number_ + 1));
-        }
         throw std::runtime_error("SYNTAX ERROR\nInvalid expression in line " + std::to_string(lexemes[pos].line_number_ + 1));
     }
 }
