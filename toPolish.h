@@ -15,7 +15,6 @@ int precedence(const Lexeme& lexeme) {
         if (lexeme.value_ == "*" || lexeme.value_ == "/") return 2;
         if (lexeme.value_ == "%") return 2; // Добавлен оператор %
         if (lexeme.value_ == "**") return 3; // Добавлен оператор **
-        // Можно добавить другие операторы по мере необходимости
     }
     return 0;
 }
@@ -25,7 +24,7 @@ std::vector<Lexeme> toPolishNotation(const std::vector<Lexeme>& lexemes) {
     std::vector<Lexeme> output; // Вектор для хранения результата
     std::stack<Lexeme> operators; // Стек для операторов
     std::stack<int> loopStartIndices; // Стек для хранения индексов начала циклов
-
+    std::stack<int> loopEndIndices; // Стек для хранения индексов конца циклов
     for (const auto& lexeme : lexemes) {
         if (lexeme.type_ == IDENTIFIER || lexeme.type_ == INTEGER || lexeme.type_ == FLOAT) {
             // Если это операнд, добавляем его в выходной массив
@@ -39,8 +38,7 @@ std::vector<Lexeme> toPolishNotation(const std::vector<Lexeme>& lexemes) {
             operators.push(lexeme); // Добавляем текущий оператор в стек
         } else if (lexeme.type_ == LEFTBRASKET) {
             operators.push(lexeme); // Добавляем открывающую скобку в стек
-        } else if (lexeme.type_ == RIGHTBRASKET) { // Изменено на RIGHTBRASKET
-            // Обрабатываем стек до тех пор, пока не встретим открывающую скобку
+        } else if (lexeme.type_ == RIGHTBRASKET) {
             while (!operators.empty() && operators.top().type_ != LEFTBRASKET) {
                 output.push_back(operators.top());
                 operators.pop();
@@ -51,6 +49,8 @@ std::vector<Lexeme> toPolishNotation(const std::vector<Lexeme>& lexemes) {
         } else if (lexeme.type_ == KEYWORD && (lexeme.value_ == "for" || lexeme.value_ == "while")) {
             loopStartIndices.push(output.size()); // Сохраняем индекс начала цикла
             operators.push(lexeme); // Обрабатываем цикл for или while
+        } else if (lexeme.type_ == KEYWORD && lexeme.value_ == "if") {
+            operators.push(lexeme); // Обрабатываем if
         }
     }
 
