@@ -8,6 +8,8 @@ class Parser {
 public:
     Parser() { 
         lexemes = AnalyzeLexeme();
+        tid.enterScope();
+        tfid.enterScope();
     };
     Parser(std::vector<Lexeme> lex)
         : lexemes(lex) {}
@@ -43,4 +45,5 @@ private:
     void cycle();
     std::vector <Lexeme> lexemes;
     int pos = 0;
+    TID* tid = new TID, * tfid = new TID;
 };

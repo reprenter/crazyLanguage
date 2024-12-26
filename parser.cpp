@@ -84,6 +84,7 @@ void Parser::declaration() {
 
 void Parser::function() {
     match(Type::TYPE);
+    tfid.declare(lexemes[pos].value_);
     match(Type::IDENTIFIER);
     match(Type::LEFTBRASKET);
     parameters();
@@ -93,6 +94,7 @@ void Parser::function() {
 
 void Parser::variable() {
     match(Type::TYPE);
+    tid.declare(lexemes[pos].value_);
     match(Type::IDENTIFIER);
     if (lexemes[pos].value_ == "=") {
         match(Type::OPERATOR);
@@ -115,6 +117,7 @@ void Parser::parameters() {
 
 void Parser::parameter() {
     match(Type::TYPE);
+    tid.declare(lexemes[pos].value_);
     match(Type::IDENTIFIER);
 }
 
@@ -337,9 +340,16 @@ void Parser::expr6() {
     else if (lexemes[pos].type_ == Type::IDENTIFIER) {
         match(Type::IDENTIFIER);
         if (lexemes[pos].type_ == Type::LEFTBRASKET) {
+            if (!tfid.isDeclared(lexemes[pos].value_)) {
+                throw std::runtime_error("SEMANTICS ERROR\nFunction " + lexemes[pos].value_ + " is not declared in line " + std::to_string(lexemes[pos].line_number_ + 1));
+            }
             match(Type::LEFTBRASKET);
             expression();
             match(Type::RIGHTBRASKET);
+        } else {
+            if (!tid.isDeclared(lexemes[pos - 1].value_)) {
+                throw std::runtime_error("SEMANTICS ERROR\nVariable " + lexemes[pos].value_ + " is not declared in line " + std::to_string(lexemes[pos].line_number_ + 1));
+            }
         }
     } else if (lexemes[pos].type_ == Type::BOOLEAN) {
         match(Type::BOOLEAN);
