@@ -3,7 +3,7 @@
 #include <vector>
 #include <stack>
 #include <string>
-#include "semantics.h"
+#include "parser.h"
 
 // Глобальный счетчик для меток
 int labelCounter = 1;

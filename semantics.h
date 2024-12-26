@@ -1,10 +1,16 @@
 #pragma once
+#include <vector>
 #include <unordered_map>
+#include <string>
 #include <stack>
 #include <memory>
+#include <stdexcept>
+
 
 class Scope {
     public:
+    Scope() = default;
+    ~Scope() = default;
     void declare (std::string id) {
         ids[id] = true;
     }
@@ -17,6 +23,10 @@ class Scope {
 
 class TID {
     public:
+    TID() {
+        enterScope();
+    }
+    ~TID() {}
     void enterScope() {
         scopes.push_back(std::make_unique<Scope>());
     }
@@ -34,11 +44,11 @@ class TID {
 
     bool isDeclared(const std::string& name) {
         for (auto it = scopes.begin(); it != scopes.end(); ++it) {
-            if ((*it)->isDeclared(name)) {
-                return true;
+            if (!(*it)->isDeclared(name)) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     private:

@@ -41,18 +41,6 @@ std::string convertTypeToString(Type type) {
     }
 }
 
-void Parser::saveFromSegFault() {
-    Lexeme lex1, lex2;
-    lex1.type_ = Type::NONE;
-    lex1.value_ = "";
-    lex1.line_number_ = 0;
-    lexemes.push_back(lex1);
-    lex2.type_ = Type::NONE;
-    lex2.value_ = "";
-    lex2.line_number_ = 0;
-    lexemes.push_back(lex2);
-}
-
 void Parser::match(Type other) {
     if (lexemes[pos].type_ == other) {
         ++pos;
@@ -84,7 +72,7 @@ void Parser::declaration() {
 
 void Parser::function() {
     match(Type::TYPE);
-    tfid.declare(lexemes[pos].value_);
+    tfid->declare(lexemes[pos].value_);
     match(Type::IDENTIFIER);
     match(Type::LEFTBRASKET);
     parameters();
@@ -94,7 +82,7 @@ void Parser::function() {
 
 void Parser::variable() {
     match(Type::TYPE);
-    tid.declare(lexemes[pos].value_);
+    tid->declare(lexemes[pos].value_);
     match(Type::IDENTIFIER);
     if (lexemes[pos].value_ == "=") {
         match(Type::OPERATOR);
@@ -117,7 +105,7 @@ void Parser::parameters() {
 
 void Parser::parameter() {
     match(Type::TYPE);
-    tid.declare(lexemes[pos].value_);
+    tid->declare(lexemes[pos].value_);
     match(Type::IDENTIFIER);
 }
 
@@ -340,14 +328,14 @@ void Parser::expr6() {
     else if (lexemes[pos].type_ == Type::IDENTIFIER) {
         match(Type::IDENTIFIER);
         if (lexemes[pos].type_ == Type::LEFTBRASKET) {
-            if (!tfid.isDeclared(lexemes[pos].value_)) {
+            if (!tfid->isDeclared(lexemes[pos].value_)) {
                 throw std::runtime_error("SEMANTICS ERROR\nFunction " + lexemes[pos].value_ + " is not declared in line " + std::to_string(lexemes[pos].line_number_ + 1));
             }
             match(Type::LEFTBRASKET);
             expression();
             match(Type::RIGHTBRASKET);
         } else {
-            if (!tid.isDeclared(lexemes[pos - 1].value_)) {
+            if (!tid->isDeclared(lexemes[pos - 1].value_)) {
                 throw std::runtime_error("SEMANTICS ERROR\nVariable " + lexemes[pos].value_ + " is not declared in line " + std::to_string(lexemes[pos].line_number_ + 1));
             }
         }

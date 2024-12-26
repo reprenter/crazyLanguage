@@ -1,16 +1,11 @@
 #pragma once
-#include <vector>
-#include "lexemeanalyzer.h"
 #include <iostream>
+#include "lexemeanalyzer.h"
 #include "semantics.h"
 
 class Parser {
 public:
-    Parser() { 
-        lexemes = AnalyzeLexeme();
-        tid.enterScope();
-        tfid.enterScope();
-    };
+    Parser() { lexemes = AnalyzeLexeme(); };
     Parser(std::vector<Lexeme> lex)
         : lexemes(lex) {}
     std::vector<Lexeme> Lexemes(){
@@ -19,7 +14,6 @@ public:
     ~Parser() = default;
     void parse() { program(); };
 private:
-    void saveFromSegFault();
     void declaration();
     void program() { declaration(); };
     void match(Type other);

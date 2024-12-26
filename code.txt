@@ -1,3 +1,4 @@
 int main() {
-    int n = k;
+    int k;
+    int n = k - 2;
 }

@@ -26,6 +26,7 @@ int main() {
     try {
         parser.parse(); 
         std::cout << "Syntax analysis passed." << '\n';
+        std::cout << "Semantics analysis passed." << '\n';
     } catch (std::runtime_error& e) {
         std::cout << e.what() << '\n';
     }
