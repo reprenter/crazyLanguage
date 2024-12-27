@@ -1,5 +1,9 @@
 #include "parser.h"
 
+bool isTypesCompatible() {
+    
+}
+
 std::string convertTypeToString(Type type) {
     switch (type) {
     case Type::NONE:
@@ -273,8 +277,9 @@ void Parser::expr0() {
         match(Type::OPERATOR);
     }
     if (tid->isDeclared(lexemes[pos].value_)) {
-        if (tid->getCurrentScope().find(lexemes[pos].value_) == "bool") {
-            
+        std::unordered_map<std::string, std::string> temp_tid = (tid->getCurrentScope());
+        if (temp_tid[std::string((lexemes[pos]).value_)] != "bool") {
+            throw std::runtime_error("SEMANTICS ERROR\nVariable " + lexemes[pos].value_ + " is not declared as boolean in line " + std::to_string(lexemes[pos].line_number_ + 1));
         }
     }
     expr1();
