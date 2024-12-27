@@ -230,7 +230,7 @@ std::vector<Lexeme> toPolishNotation(const std::vector<Lexeme>& lexemes) {
             }
         } else if (lexeme.type_ == KEYWORD && (lexeme.value_ == "for" || lexeme.value_ == "while" || lexeme.value_ == "if" || lexeme.value_ == "switch" ||
                                                                                                                               lexeme.value_ == "case" ||
-                                                                                                                              lexeme.value_ == "default")) {
+                                                                                                                              lexeme.value_ == "break")) {
             Lexeme IF;
             IF.value_ = "if"; // Создаем команду перехода к началу цикла
             IF.type_ = KEYWORD; 
@@ -328,6 +328,8 @@ std::vector<Lexeme> toPolishNotation(const std::vector<Lexeme>& lexemes) {
             else if(lexeme.value_ == "switch"){
                 i++;
                 switchLexemes.emplace(swk, getPart(lexemes, i));
+                rigthFigureBrasket.emplace(swk, "switchClose");
+                swk++;
             }
             else if(lexeme.value_ == "case"){
                 output.push_back(IF);
@@ -349,13 +351,15 @@ std::vector<Lexeme> toPolishNotation(const std::vector<Lexeme>& lexemes) {
                 output.emplace_back("=",OPERATOR);
                 output.emplace_back(")", RIGHTBRASKET);
                 output.emplace_back("goto L"+std::to_string(k), KEYWORD);
+                rigthFigureBrasket.emplace(k, "caseClose");
                 k++;
-
+                i++;
             }
-            else if(lexeme.value_ == "default"){
+            else if(lexeme.value_ == "break"){
                 continue;
             }
         } else if(lexeme.type_ == RIGHTFIGUREBRASKET){
+            if(rigthFigureBrasket.size() == 0) continue;
             if(lexemes.size()>i+1 and lexemes[i+1].value_ == "else" and rigthFigureBrasket.top().second == "if"){
                 int _ = rigthFigureBrasket.top().first;
                 rigthFigureBrasket.pop();
@@ -420,7 +424,16 @@ std::vector<Lexeme> toPolishNotation(const std::vector<Lexeme>& lexemes) {
                 ifLabel.type_ = IDENTIFIER; // Используем тип IDENTIFIER для метки
                 output.push_back(ifLabel);
             }
-
+            else if(rigthFigureBrasket.top().second == "switchClose"){
+                rigthFigureBrasket.pop();
+                output.emplace_back("EXIT"+std::to_string(switchLexemes.top().first), IDENTIFIER);
+            }
+            else if(rigthFigureBrasket.top().second == "caseClose"){
+                int _ = rigthFigureBrasket.top().first;
+                rigthFigureBrasket.pop();
+                output.emplace_back("goto EXIT"+std::to_string(switchLexemes.top().first), KEYWORD);
+                output.emplace_back("L"+std::to_string(_), IDENTIFIER);
+            }
         }
         else if(lexeme.type_ == TYPE or lexeme.type_ == KEYWORD){
             output.push_back(lexeme);
