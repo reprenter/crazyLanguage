@@ -73,7 +73,7 @@ void Parser::declaration() {
 void Parser::function() {
     tid->enterScope();
     match(Type::TYPE);
-    tfid->declare(lexemes[pos].value_, convertTypeToString(lexemes[pos].type_));
+    tfid->declare(lexemes[pos].value_, lexemes[pos - 1].value_);
     match(Type::IDENTIFIER);
     match(Type::LEFTBRASKET);
     parameters();
@@ -83,7 +83,7 @@ void Parser::function() {
 
 void Parser::variable() {
     match(Type::TYPE);
-    tid->declare(lexemes[pos].value_, convertTypeToString(lexemes[pos].type_));
+    tid->declare(lexemes[pos].value_, lexemes[pos - 1].value_);
     match(Type::IDENTIFIER);
     if (lexemes[pos].value_ == "=") {
         match(Type::OPERATOR);
@@ -106,7 +106,7 @@ void Parser::parameters() {
 
 void Parser::parameter() {
     match(Type::TYPE);
-    tid->declare(lexemes[pos].value_, convertTypeToString(lexemes[pos].type_));
+    tid->declare(lexemes[pos].value_, lexemes[pos - 1].value_);
     match(Type::IDENTIFIER);
 }
 
@@ -271,6 +271,11 @@ void Parser::expression() {
 void Parser::expr0() {
     if (lexemes[pos].type_ == Type::OPERATOR && lexemes[pos].value_ == "!") {
         match(Type::OPERATOR);
+    }
+    if (tid->isDeclared(lexemes[pos].value_)) {
+        if (tid->getCurrentScope().find(lexemes[pos].value_) == "bool") {
+            
+        }
     }
     expr1();
 }

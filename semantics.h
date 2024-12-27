@@ -11,26 +11,21 @@ class Scope {
     public:
     Scope() = default;
     ~Scope() = default;
-    void declare (std::string id, std::string type) {
-        ids[id] = type;
-    }
+    void declare (std::string id, std::string type) { ids[id] = type; }
     bool isDeclared(std::string id) {
         return ids.empty() ? false : ids.find(id) != ids.end();
     }
+    std::unordered_map<std::string, std::string> getIds() { return ids; }
     private:
     std::unordered_map<std::string, std::string> ids; // id and type
 };
 
 class TID {
     public:
-    TID() {
-        enterScope();
-    }
+    TID() { enterScope(); }
     ~TID() {}
-    void enterScope() {
-        scopes.push_back(std::make_unique<Scope>());
-    }
-    
+    void enterScope() { scopes.push_back(std::make_unique<Scope>()); }
+    std::unordered_map<std::string, std::string> getCurrentScope() { return scopes.back().get()->getIds(); }
     void exitScope() {
         if (scopes.empty()) {
             throw std::runtime_error("No scope to exit");
@@ -38,7 +33,7 @@ class TID {
         scopes.pop_back();
     }
 
-    void declare(const std::string& id, const std::string& type) {
+    void declare(const std::string& id, const std::string& type = "") {
         scopes.back()->declare(id, type);
     }
 
@@ -54,4 +49,9 @@ class TID {
 
     private:
     std::vector<std::unique_ptr<Scope>> scopes;
+};
+
+struct expr {
+    std::string type;
+    std::vector <std::string> args;
 };
