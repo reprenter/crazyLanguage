@@ -359,6 +359,7 @@ std::vector<Lexeme> toPolishNotation(const std::vector<Lexeme>& lexemes) {
                 continue;
             }
         } else if(lexeme.type_ == RIGHTFIGUREBRASKET){
+            if(rigthFigureBrasket.size() == 0) continue;
             if(lexemes.size()>i+1 and lexemes[i+1].value_ == "else" and rigthFigureBrasket.top().second == "if"){
                 int _ = rigthFigureBrasket.top().first;
                 rigthFigureBrasket.pop();
