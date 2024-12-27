@@ -3,7 +3,7 @@
 #include <sstream>
 
 #include "parser.h"
-// #include "toPolish.h"
+#include "toPolish.h"
 
 int main() {
     // std::cout << "Enter source file name: ";
@@ -30,10 +30,9 @@ int main() {
     } catch (std::runtime_error& e) {
         std::cout << e.what() << '\n';
     }
-
-    // std::vector<Lexeme> Polish = toPolishNotation(lexemes);
-    // for (auto i : Polish) {
-    //     std::cout << i.value_ << ' ';
-    // }
+    std::vector<Lexeme> Polish = toPolishNotation(lexemes);
+    for (auto i : Polish) {
+        std::cout << i.value_ << ' ';
+    }
     return 0;
 }

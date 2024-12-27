@@ -30,6 +30,7 @@ const std::string NASTRING = "~~~~~~";
 struct Lexeme
 {
     Lexeme() = default;
+    Lexeme(std::string a, Type TPE) : value_(a), type_(TPE){}
     ~Lexeme() = default;
     std::string value_ = "~~~~~~";
     Type type_ = Type::NONE;
