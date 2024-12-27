@@ -11,14 +11,14 @@ class Scope {
     public:
     Scope() = default;
     ~Scope() = default;
-    void declare (std::string id) {
-        ids[id] = true;
+    void declare (std::string id, std::string type) {
+        ids[id] = type;
     }
     bool isDeclared(std::string id) {
-        return ids.find(id) != ids.end();
+        return ids.empty() ? false : ids.find(id) != ids.end();
     }
     private:
-    std::unordered_map<std::string, bool> ids;
+    std::unordered_map<std::string, std::string> ids; // id and type
 };
 
 class TID {
@@ -38,17 +38,18 @@ class TID {
         scopes.pop_back();
     }
 
-    void declare(const std::string& id) {
-        scopes.back()->declare(id);
+    void declare(const std::string& id, const std::string& type) {
+        scopes.back()->declare(id, type);
     }
 
     bool isDeclared(const std::string& name) {
+        bool ans = false;
         for (auto it = scopes.begin(); it != scopes.end(); ++it) {
-            if (!(*it)->isDeclared(name)) {
-                return false;
+            if ((*it)->isDeclared(name)) {
+                ans = true;
             }
         }
-        return true;
+        return ans;
     }
 
     private:

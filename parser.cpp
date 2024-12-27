@@ -71,8 +71,9 @@ void Parser::declaration() {
 }
 
 void Parser::function() {
+    tid->enterScope();
     match(Type::TYPE);
-    tfid->declare(lexemes[pos].value_);
+    tfid->declare(lexemes[pos].value_, convertTypeToString(lexemes[pos].type_));
     match(Type::IDENTIFIER);
     match(Type::LEFTBRASKET);
     parameters();
@@ -82,7 +83,7 @@ void Parser::function() {
 
 void Parser::variable() {
     match(Type::TYPE);
-    tid->declare(lexemes[pos].value_);
+    tid->declare(lexemes[pos].value_, convertTypeToString(lexemes[pos].type_));
     match(Type::IDENTIFIER);
     if (lexemes[pos].value_ == "=") {
         match(Type::OPERATOR);
@@ -105,7 +106,7 @@ void Parser::parameters() {
 
 void Parser::parameter() {
     match(Type::TYPE);
-    tid->declare(lexemes[pos].value_);
+    tid->declare(lexemes[pos].value_, convertTypeToString(lexemes[pos].type_));
     match(Type::IDENTIFIER);
 }
 
@@ -113,7 +114,7 @@ void Parser::block() {
     match(Type::LEFTFIGUREBRASKET);
     instruction();
     match(Type::RIGHTFIGUREBRASKET);
-
+    tid->exitScope();
 }
 
 
@@ -168,22 +169,13 @@ void Parser::instruction() {
 
 
 void Parser::ooperator() {
-    if (lexemes[pos].type_ == Type::TYPE) {
-        match(Type::TYPE);
-        if (lexemes[pos + 1].type_ == Type::OPERATOR) {
-            match(Type::IDENTIFIER);
-            match(Type::OPERATOR);
-            expression();
-            match(Type::DOTXCOMMA);
-        } else {
-            match(Type::DOTXCOMMA);
-        }
-    } else {
-        match(Type::IDENTIFIER);
-        match(Type::OPERATOR);
-        expression();
-        match(Type::DOTXCOMMA);
+    match(Type::IDENTIFIER);
+    if (!tid->isDeclared(lexemes[pos - 1].value_)) {
+        throw std::runtime_error("SEMANTICS ERROR\nVariable " + lexemes[pos - 1].value_ + " is not declared in line " + std::to_string(lexemes[pos].line_number_ + 1));
     }
+    match(Type::OPERATOR);
+    expression();
+    match(Type::DOTXCOMMA);
 }
 
 void Parser::cycle() {
@@ -193,10 +185,12 @@ void Parser::cycle() {
             match(Type::LEFTBRASKET);
             expression();
             match(Type::RIGHTBRASKET);
+            tid->enterScope();
             block();
         } else if (lexemes[pos].value_ == "for") {
             match(Type::KEYWORD);
             match(Type::LEFTBRASKET);
+            tid->enterScope();
             initialization();
             // match(Type::DOTXCOMMA);
             expression();
@@ -209,7 +203,10 @@ void Parser::cycle() {
 }
 
 void Parser::initialization() {
-    ooperator();
+    if (lexemes[pos].type_ == Type::DOTXCOMMA) {
+        return;
+    }
+    variable();
 }
 
 void Parser::step() {
@@ -223,6 +220,7 @@ void Parser::ifinstruct() {
             match(Type::LEFTBRASKET);
             expression();
             match(Type::RIGHTBRASKET);
+            tid->enterScope();
             block();
             if (lexemes[pos].type_ == Type::KEYWORD) {
                 if (lexemes[pos].value_ == "else") {
@@ -235,6 +233,7 @@ void Parser::ifinstruct() {
             match(Type::LEFTBRASKET);
             expression();
             match(Type::RIGHTBRASKET);
+            tid->enterScope();
             match(Type::LEFTFIGUREBRASKET);
             cases();
             match(Type::RIGHTFIGUREBRASKET);
@@ -248,6 +247,7 @@ void Parser::cases() {
             match(Type::KEYWORD);
             match(Type::STRING);
             match(Type::COLON);
+            tid->enterScope();
             block();
             cases();
         }
