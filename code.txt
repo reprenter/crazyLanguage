@@ -1,5 +1,5 @@
-int funct() {
-    float a = 0;
+int funct(int a, int b) {
+    a = 0;
     return 0;
 }
 

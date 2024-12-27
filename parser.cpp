@@ -1,7 +1,7 @@
 #include "parser.h"
 
 bool isTypesCompatible() {
-    
+
 }
 
 std::string convertTypeToString(Type type) {
@@ -105,6 +105,9 @@ void Parser::variable() {
 void Parser::parameters() {
     while (lexemes[pos].type_ == Type::TYPE) {
         parameter();
+        if (lexemes[pos].type_ != Type::RIGHTBRASKET) {
+            match(Type::COMMA);
+        }
     }
 }
 
@@ -275,12 +278,12 @@ void Parser::expression() {
 void Parser::expr0() {
     if (lexemes[pos].type_ == Type::OPERATOR && lexemes[pos].value_ == "!") {
         match(Type::OPERATOR);
-    }
-    if (tid->isDeclared(lexemes[pos].value_)) {
+        if (tid->isDeclared(lexemes[pos].value_)) {
         std::unordered_map<std::string, std::string> temp_tid = (tid->getCurrentScope());
         if (temp_tid[std::string((lexemes[pos]).value_)] != "bool") {
             throw std::runtime_error("SEMANTICS ERROR\nVariable " + lexemes[pos].value_ + " is not declared as boolean in line " + std::to_string(lexemes[pos].line_number_ + 1));
         }
+    }
     }
     expr1();
 }

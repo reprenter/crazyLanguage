@@ -29,7 +29,7 @@ class TID {
     void exitScope() {
         if (scopes.empty()) {
             throw std::runtime_error("No scope to exit");
-        }
+        }   
         scopes.pop_back();
     }
 
